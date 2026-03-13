@@ -151,23 +151,28 @@ export default function ShopPage() {
       <div style={{
         maxWidth: 1280, margin: '0 auto', padding: '32px 24px',
       }}>
-        {/* Filter Toggle Bar */}
-        <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
+
+        {/* Floating Filter Button — fixed right side */}
+        <div style={{
+          position: 'fixed', right: 24, top: '50%', transform: 'translateY(-50%)',
+          zIndex: 50, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8,
+        }}>
           <button onClick={() => setFiltersOpen(!filtersOpen)} style={{
             display: 'flex', alignItems: 'center', gap: 8,
-            padding: '10px 20px', borderRadius: 'var(--radius-full)',
-            border: `1px solid ${filtersOpen ? 'var(--fp-amber)' : 'var(--fp-gray-200)'}`,
-            background: filtersOpen ? 'var(--fp-amber-glow)' : 'white',
-            cursor: 'pointer', fontSize: 13, fontWeight: 600,
-            color: filtersOpen ? 'var(--fp-amber-dark)' : 'var(--fp-navy)',
+            padding: '12px 20px', borderRadius: 'var(--radius-full)',
+            border: 'none',
+            background: filtersOpen ? 'var(--fp-navy)' : 'white',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04)',
+            cursor: 'pointer', fontSize: 13, fontWeight: 700,
+            color: filtersOpen ? 'white' : 'var(--fp-navy)',
             transition: 'all 0.2s ease',
           }}>
             <SlidersHorizontal size={14} /> Filters
             {activeFilterCount > 0 && (
               <span style={{
                 width: 18, height: 18, borderRadius: '50%',
-                background: 'var(--fp-amber)', color: 'white',
-                fontSize: 10, fontWeight: 800,
+                background: filtersOpen ? 'var(--fp-amber)' : 'var(--fp-amber)',
+                color: 'white', fontSize: 10, fontWeight: 800,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>{activeFilterCount}</span>
             )}
@@ -176,92 +181,109 @@ export default function ShopPage() {
               transform: filtersOpen ? 'rotate(180deg)' : 'rotate(0)',
             }} />
           </button>
-          {activeFilterCount > 0 && (
+          {activeFilterCount > 0 && !filtersOpen && (
             <button onClick={() => { setCategory('all'); setPetType('all'); setBrand('all'); setSearch(''); }} style={{
-              padding: '10px 16px', borderRadius: 'var(--radius-full)',
-              border: 'none', background: 'var(--fp-gray-50)',
-              cursor: 'pointer', fontSize: 12, fontWeight: 600,
+              padding: '8px 14px', borderRadius: 'var(--radius-full)',
+              border: 'none', background: 'white',
+              boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
+              cursor: 'pointer', fontSize: 11, fontWeight: 600,
               color: 'var(--fp-gray-400)',
-            }}>Clear all filters</button>
+            }}>Clear filters</button>
           )}
         </div>
 
-        {/* Collapsible Filter Panel */}
+        {/* Filter Panel — floating dropdown */}
         {filtersOpen && (
-          <div style={{
-            background: 'white', borderRadius: 'var(--radius-xl)',
-            border: '1px solid var(--fp-gray-100)',
-            padding: '24px', marginBottom: 24,
-            display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 24,
-            animation: 'fadeIn 0.2s ease',
-          }}>
-            {/* Search */}
-            <div>
-              <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--fp-gray-400)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8, display: 'block' }}>Search</label>
-              <div style={{ position: 'relative' }}>
-                <Search size={16} style={{
-                  position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
-                  color: 'var(--fp-gray-300)',
-                }} />
-                <input
-                  type="text" placeholder="Search products..."
-                  value={search} onChange={e => setSearch(e.target.value)}
-                  className="fp-input" style={{ paddingLeft: 36 }}
-                />
+          <>
+            <div onClick={() => setFiltersOpen(false)} style={{
+              position: 'fixed', inset: 0, zIndex: 45,
+            }} />
+            <div style={{
+              position: 'fixed', right: 24, top: 'calc(50% + 28px)',
+              width: 360, zIndex: 51,
+              background: 'white', borderRadius: 'var(--radius-xl)',
+              boxShadow: '0 12px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.04)',
+              padding: '20px',
+              animation: 'fadeIn 0.2s ease',
+              display: 'flex', flexDirection: 'column', gap: 20,
+              maxHeight: '60vh', overflowY: 'auto',
+            }}>
+              {/* Search */}
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--fp-gray-400)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6, display: 'block' }}>Search</label>
+                <div style={{ position: 'relative' }}>
+                  <Search size={14} style={{
+                    position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)',
+                    color: 'var(--fp-gray-300)',
+                  }} />
+                  <input
+                    type="text" placeholder="Search products..."
+                    value={search} onChange={e => setSearch(e.target.value)}
+                    className="fp-input" style={{ paddingLeft: 32, fontSize: 13 }}
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* Pet Type */}
-            <div>
-              <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--fp-gray-400)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8, display: 'block' }}>Pet Type</label>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                {PET_TYPES.map(pt => (
-                  <button key={pt.id} onClick={() => setPetType(pt.id)} style={{
-                    display: 'flex', alignItems: 'center', gap: 8,
-                    padding: '8px 12px', borderRadius: 'var(--radius-sm)',
-                    border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 500,
-                    textAlign: 'left',
-                    background: petType === pt.id ? 'var(--fp-amber-glow)' : 'transparent',
-                    color: petType === pt.id ? 'var(--fp-amber-dark)' : 'var(--fp-gray-500)',
-                  }}>
-                    <pt.icon size={14} /> {pt.label}
-                  </button>
-                ))}
+              {/* Pet Type */}
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--fp-gray-400)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6, display: 'block' }}>Pet Type</label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                  {PET_TYPES.map(pt => (
+                    <button key={pt.id} onClick={() => setPetType(pt.id)} style={{
+                      display: 'flex', alignItems: 'center', gap: 5,
+                      padding: '6px 12px', borderRadius: 'var(--radius-full)',
+                      border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600,
+                      background: petType === pt.id ? 'var(--fp-amber-glow)' : 'var(--fp-gray-50)',
+                      color: petType === pt.id ? 'var(--fp-amber-dark)' : 'var(--fp-gray-500)',
+                    }}>
+                      <pt.icon size={12} /> {pt.label}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Category */}
-            <div>
-              <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--fp-gray-400)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8, display: 'block' }}>Category</label>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                {CATEGORIES.map(cat => (
-                  <button key={cat.id} onClick={() => setCategory(cat.id)} style={{
-                    padding: '8px 12px', borderRadius: 'var(--radius-sm)',
-                    border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 500,
-                    textAlign: 'left',
-                    background: category === cat.id ? 'var(--fp-amber-glow)' : 'transparent',
-                    color: category === cat.id ? 'var(--fp-amber-dark)' : 'var(--fp-gray-500)',
-                  }}>
-                    {cat.label}
-                  </button>
-                ))}
+              {/* Category */}
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--fp-gray-400)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6, display: 'block' }}>Category</label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                  {CATEGORIES.map(cat => (
+                    <button key={cat.id} onClick={() => setCategory(cat.id)} style={{
+                      padding: '6px 12px', borderRadius: 'var(--radius-full)',
+                      border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600,
+                      background: category === cat.id ? 'var(--fp-amber-glow)' : 'var(--fp-gray-50)',
+                      color: category === cat.id ? 'var(--fp-amber-dark)' : 'var(--fp-gray-500)',
+                    }}>
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Brand */}
-            <div>
-              <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--fp-gray-400)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8, display: 'block' }}>Brand</label>
-              <select
-                value={brand} onChange={e => setBrand(e.target.value)}
-                className="fp-input" style={{ width: '100%' }}
-              >
-                <option value="all">All Brands</option>
-                {availableBrands.map(b => (
-                  <option key={b} value={b}>{b}</option>
-                ))}
-              </select>
+              {/* Brand */}
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--fp-gray-400)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6, display: 'block' }}>Brand</label>
+                <select
+                  value={brand} onChange={e => setBrand(e.target.value)}
+                  className="fp-input" style={{ width: '100%', fontSize: 13 }}
+                >
+                  <option value="all">All Brands</option>
+                  {availableBrands.map(b => (
+                    <option key={b} value={b}>{b}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Clear */}
+              {activeFilterCount > 0 && (
+                <button onClick={() => { setCategory('all'); setPetType('all'); setBrand('all'); setSearch(''); }} style={{
+                  padding: '10px', borderRadius: 'var(--radius-md)',
+                  border: 'none', background: 'var(--fp-gray-50)',
+                  cursor: 'pointer', fontSize: 12, fontWeight: 600,
+                  color: 'var(--fp-gray-400)', textAlign: 'center',
+                }}>Clear all filters</button>
+              )}
             </div>
-          </div>
+          </>
         )}
 
         {/* Product Grid */}
