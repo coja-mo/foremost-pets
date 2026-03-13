@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useForemostStore } from '@/lib/store';
@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 import {
   ArrowLeft, Shield, Truck, RotateCcw, Heart, Star,
   Dog, Cat, Fish, ChevronRight, Package, MapPin, ShoppingBag, Minus, Plus,
+  PawPrint, Clock as ClockIcon,
 } from 'lucide-react';
 
 export default function ProductDetailPage() {
@@ -53,6 +54,21 @@ export default function ProductDetailPage() {
   const PetIcon = product.petType.includes('dog') ? Dog : product.petType.includes('cat') ? Cat : Fish;
   const petGradient = product.petType.includes('dog') ? '#fef3c7' : product.petType.includes('cat') ? '#dbeafe' : '#d1fae5';
 
+  // Recently viewed tracking
+  const [recentlyViewed, setRecentlyViewed] = useState<any[]>([]);
+  useEffect(() => {
+    if (!product) return;
+    const key = 'fp-recently-viewed';
+    const stored: string[] = JSON.parse(localStorage.getItem(key) || '[]');
+    const updated = [product.id, ...stored.filter(id => id !== product.id)].slice(0, 8);
+    localStorage.setItem(key, JSON.stringify(updated));
+    // Load recently viewed products (excluding current)
+    const viewed = updated.filter(id => id !== product.id)
+      .map(id => products.find(p => p.id === id))
+      .filter(Boolean).slice(0, 6);
+    setRecentlyViewed(viewed);
+  }, [product?.id]);
+
   return (
     <div style={{ minHeight: '100vh', background: 'var(--fp-bg)' }}>
       <StorefrontHeader />
@@ -67,7 +83,9 @@ export default function ProductDetailPage() {
         <ChevronRight size={12} />
         <Link href="/shop" style={{ color: 'var(--fp-gray-400)', textDecoration: 'none' }}>Shop</Link>
         <ChevronRight size={12} />
-        <span style={{ color: 'var(--fp-navy)', fontWeight: 600 }}>{product.name}</span>
+        <span style={{ color: 'var(--fp-gray-400)' }}>{product.brand}</span>
+        <ChevronRight size={12} />
+        <span style={{ color: 'var(--fp-navy)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 200, display: 'inline-block' }}>{product.name}</span>
       </div>
 
       {/* Product Detail */}
@@ -408,6 +426,51 @@ export default function ProductDetailPage() {
                         WebkitBoxOrient: 'vertical', overflow: 'hidden',
                       }}>{rp.name}</h4>
                       <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--fp-navy)', fontFamily: 'var(--font-heading)' }}>
+                        ${rp.price.toFixed(2)}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Recently Viewed */}
+      {recentlyViewed.length > 0 && (
+        <section style={{ padding: '48px 24px' }}>
+          <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+            <h2 style={{
+              fontFamily: 'var(--font-heading)', fontSize: 20, fontWeight: 800,
+              color: 'var(--fp-navy)', marginBottom: 20,
+              display: 'flex', alignItems: 'center', gap: 8,
+            }}>
+              <ClockIcon size={18} color="var(--fp-gray-300)" /> Recently Viewed
+            </h2>
+            <div style={{ display: 'flex', gap: 16, overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: 8 }}>
+              {recentlyViewed.map(rp => (
+                <Link key={rp.id} href={`/shop/${rp.id}`} style={{
+                  flexShrink: 0, width: 200, textDecoration: 'none', color: 'inherit',
+                }}>
+                  <div style={{
+                    borderRadius: 'var(--radius-lg)',
+                    border: '1px solid var(--fp-gray-100)',
+                    overflow: 'hidden', transition: 'all 0.2s ease',
+                  }}>
+                    <div style={{
+                      height: 110, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      background: `linear-gradient(135deg, ${rp.petType.includes('dog') ? '#fef3c7' : rp.petType.includes('cat') ? '#dbeafe' : '#d1fae5'}, white)`,
+                    }}>
+                      <PawPrint size={24} strokeWidth={1.5} color="var(--fp-gray-200)" />
+                    </div>
+                    <div style={{ padding: '10px 12px' }}>
+                      <div style={{ fontSize: 9, fontWeight: 600, color: 'var(--fp-amber-dark)', textTransform: 'uppercase', marginBottom: 2 }}>{rp.brand}</div>
+                      <div style={{
+                        fontSize: 12, fontWeight: 600, color: 'var(--fp-navy)', marginBottom: 4,
+                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                      }}>{rp.name}</div>
+                      <div style={{ fontSize: 14, fontWeight: 800, fontFamily: 'var(--font-heading)', color: 'var(--fp-navy)' }}>
                         ${rp.price.toFixed(2)}
                       </div>
                     </div>
