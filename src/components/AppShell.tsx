@@ -2,13 +2,14 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useForemostStore } from '@/lib/store';
+import AuthGuard from '@/components/AuthGuard';
 import {
   Home, ShoppingBag, Users, Package, Gift, Tag, BarChart3,
   Settings, Bell, Search, Menu, X, LogOut, ChevronDown,
   Store, CreditCard, Repeat, Truck, PawPrint, Dog, Cat, Fish,
-  Shield, UserCircle, Heart,
+  Shield, UserCircle, Heart, FileText,
 } from 'lucide-react';
 
 // ---- SVG Logo Component ----
@@ -47,24 +48,25 @@ function ForemostLogo({ collapsed = false }: { collapsed?: boolean }) {
 
 // ---- Navigation Configuration ----
 const mainNav = [
-  { href: '/', label: 'Dashboard', icon: Home },
-  { href: '/products', label: 'Products', icon: Package },
-  { href: '/customers', label: 'Customers', icon: Users },
-  { href: '/orders', label: 'Orders', icon: ShoppingBag },
-  { href: '/pos', label: 'Point of Sale', icon: CreditCard },
+  { href: '/admin', label: 'Dashboard', icon: Home },
+  { href: '/admin/products', label: 'Products', icon: Package },
+  { href: '/admin/customers', label: 'Customers', icon: Users },
+  { href: '/admin/orders', label: 'Orders', icon: ShoppingBag },
+  { href: '/admin/pos', label: 'Point of Sale', icon: CreditCard },
 ];
 
 const managementNav = [
-  { href: '/loyalty', label: 'Loyalty Program', icon: Heart },
-  { href: '/gift-cards', label: 'Gift Cards', icon: Gift },
-  { href: '/promotions', label: 'Promotions', icon: Tag },
-  { href: '/autoship', label: 'AutoShip', icon: Repeat },
-  { href: '/inventory', label: 'Inventory', icon: Truck },
+  { href: '/admin/loyalty', label: 'Loyalty Program', icon: Heart },
+  { href: '/admin/gift-cards', label: 'Gift Cards', icon: Gift },
+  { href: '/admin/promotions', label: 'Promotions', icon: Tag },
+  { href: '/admin/autoship', label: 'AutoShip', icon: Repeat },
+  { href: '/admin/inventory', label: 'Inventory', icon: Truck },
 ];
 
 const analyticsNav = [
-  { href: '/analytics', label: 'Analytics', icon: BarChart3 },
-  { href: '/settings', label: 'Settings', icon: Settings },
+  { href: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
+  { href: '/admin/reports', label: 'Reports', icon: FileText },
+  { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
 // ---- Sidebar Component ----
@@ -153,7 +155,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
           padding: '20px 24px', borderBottom: '1px solid var(--fp-gray-100)',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
-          <Link href="/" style={{ textDecoration: 'none' }}>
+          <Link href="/admin" style={{ textDecoration: 'none' }}>
             <ForemostLogo />
           </Link>
           <button onClick={onClose} style={{
@@ -361,20 +363,22 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div style={{
-        flex: 1,
-        marginLeft: sidebarOpen ? 'var(--sidebar-width)' : 0,
-        transition: 'margin-left var(--transition-smooth)',
-        display: 'flex', flexDirection: 'column',
-        minHeight: '100vh',
-      }}>
-        <Header onMenuToggle={() => setSidebarOpen(!sidebarOpen)} sidebarOpen={sidebarOpen} />
-        <main style={{ flex: 1, padding: 28 }}>
-          {children}
-        </main>
+    <AuthGuard>
+      <div style={{ display: 'flex', minHeight: '100vh' }}>
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <div style={{
+          flex: 1,
+          marginLeft: sidebarOpen ? 'var(--sidebar-width)' : 0,
+          transition: 'margin-left var(--transition-smooth)',
+          display: 'flex', flexDirection: 'column',
+          minHeight: '100vh',
+        }}>
+          <Header onMenuToggle={() => setSidebarOpen(!sidebarOpen)} sidebarOpen={sidebarOpen} />
+          <main style={{ flex: 1, padding: 28 }}>
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
+    </AuthGuard>
   );
 }

@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import AppShell from '@/components/AppShell';
 import { useForemostStore } from '@/lib/store';
-import { Product, PaymentMethod } from '@/lib/types';
+import { Product, PaymentMethod, Order } from '@/lib/types';
+import ReceiptModal from '@/components/ReceiptModal';
 import toast from 'react-hot-toast';
 import {
   Search, Plus, Minus, Trash2, User, CreditCard, DollarSign,
@@ -131,6 +131,7 @@ function CartPanel() {
   const [customerQuery, setCustomerQuery] = useState('');
   const [showPayment, setShowPayment] = useState(false);
   const [promoCode, setPromoCode] = useState('');
+  const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
 
   const totals = getCartTotal();
   const matchedCustomers = customerQuery ? searchCustomers(customerQuery) : customers.slice(0, 5);
@@ -140,6 +141,7 @@ function CartPanel() {
     if (order) {
       toast.success(`Order ${order.orderNumber} completed! $${order.totalAmount.toFixed(2)}`);
       setShowPayment(false);
+      setCompletedOrder(order);
     }
   };
 
@@ -148,6 +150,7 @@ function CartPanel() {
   };
 
   return (
+    <>
     <div style={{
       width: 420, background: 'var(--fp-white)', borderLeft: '1px solid var(--fp-gray-100)',
       display: 'flex', flexDirection: 'column', height: 'calc(100vh - var(--header-height))',
@@ -411,6 +414,16 @@ function CartPanel() {
         </div>
       )}
     </div>
+
+      {/* Receipt Modal */}
+      {completedOrder && (
+        <ReceiptModal
+          order={completedOrder}
+          onClose={() => setCompletedOrder(null)}
+          onNewSale={() => setCompletedOrder(null)}
+        />
+      )}
+    </>
   );
 }
 
@@ -422,36 +435,29 @@ export default function POSPage() {
 
   if (!mounted) {
     return (
-      <AppShell>
-        <div style={{ padding: 40, textAlign: 'center' }}>
-          <div className="fp-skeleton" style={{ width: 200, height: 30, margin: '0 auto' }} />
-        </div>
-      </AppShell>
+      <div style={{ padding: 40, textAlign: 'center' }}>
+        <div className="fp-skeleton" style={{ width: 200, height: 30, margin: '0 auto' }} />
+      </div>
     );
   }
 
   return (
-    <AppShell>
-      <div style={{
-        display: 'flex', gap: 0,
-        margin: '-28px', // Full bleed within the main content area
-        height: 'calc(100vh - var(--header-height))',
-      }}>
-        {/* Product selection area */}
-        <div style={{ flex: 1, padding: 24, display: 'flex', flexDirection: 'column' }}>
-          <div style={{ marginBottom: 16 }}>
-            <h1 style={{ fontSize: 24, fontWeight: 800 }}>Point of Sale</h1>
-            <p style={{ fontSize: 14, color: 'var(--fp-gray-400)' }}>Scan, search, or browse to add items</p>
-          </div>
-          <ProductGrid onAdd={(product) => {
-            addToCart(product);
-            toast.success(`Added ${product.name}`, { duration: 1500, icon: '🐾' });
-          }} />
+    <div style={{
+      display: 'flex', gap: 0,
+      margin: '-28px',
+      height: 'calc(100vh - var(--header-height))',
+    }}>
+      <div style={{ flex: 1, padding: 24, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ marginBottom: 16 }}>
+          <h1 style={{ fontSize: 24, fontWeight: 800 }}>Point of Sale</h1>
+          <p style={{ fontSize: 14, color: 'var(--fp-gray-400)' }}>Scan, search, or browse to add items</p>
         </div>
-
-        {/* Cart panel */}
-        <CartPanel />
+        <ProductGrid onAdd={(product) => {
+          addToCart(product);
+          toast.success(`Added ${product.name}`, { duration: 1500, icon: '🐾' });
+        }} />
       </div>
-    </AppShell>
+      <CartPanel />
+    </div>
   );
 }
