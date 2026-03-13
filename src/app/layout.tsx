@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import Providers from "@/components/Providers";
 
 export const metadata: Metadata = {
   title: "Foremost Pets | Dedicated to Pet Nutrition — Sault Ste. Marie",
@@ -30,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <Providers>{children}</Providers>
         <Toaster
           position="top-right"
           toastOptions={{

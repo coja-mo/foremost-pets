@@ -1,19 +1,23 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useForemostStore } from '@/lib/store';
 import StorefrontHeader from '@/components/StorefrontHeader';
 import StorefrontFooter from '@/components/StorefrontFooter';
+import { useCart } from '@/components/CartContext';
+import toast from 'react-hot-toast';
 import {
   ArrowLeft, Shield, Truck, RotateCcw, Heart, Star,
-  Dog, Cat, Fish, ChevronRight, Package, MapPin,
+  Dog, Cat, Fish, ChevronRight, Package, MapPin, ShoppingBag, Minus, Plus,
 } from 'lucide-react';
 
 export default function ProductDetailPage() {
   const params = useParams();
   const { products } = useForemostStore();
+  const { addItem } = useCart();
+  const [qty, setQty] = useState(1);
   const product = products.find(p => p.id === params.slug);
 
   if (!product) {
@@ -164,6 +168,60 @@ export default function ProductDetailPage() {
             }}>
               {product.category.replace(/-/g, ' ')}
             </span>
+          </div>
+
+          {/* Add to Cart */}
+          <div style={{
+            display: 'flex', gap: 12, marginBottom: 28,
+          }}>
+            <div style={{
+              display: 'flex', alignItems: 'center',
+              border: '2px solid var(--fp-gray-200)', borderRadius: 'var(--radius-md)',
+              overflow: 'hidden',
+            }}>
+              <button onClick={() => setQty(q => Math.max(1, q - 1))} style={{
+                width: 44, height: 48, display: 'flex', alignItems: 'center',
+                justifyContent: 'center', background: 'var(--fp-gray-50)',
+                border: 'none', cursor: 'pointer', color: 'var(--fp-gray-500)',
+              }}>
+                <Minus size={16} />
+              </button>
+              <span style={{
+                width: 48, textAlign: 'center', fontSize: 16,
+                fontWeight: 800, fontFamily: 'var(--font-heading)',
+              }}>{qty}</span>
+              <button onClick={() => setQty(q => q + 1)} style={{
+                width: 44, height: 48, display: 'flex', alignItems: 'center',
+                justifyContent: 'center', background: 'var(--fp-gray-50)',
+                border: 'none', cursor: 'pointer', color: 'var(--fp-gray-500)',
+              }}>
+                <Plus size={16} />
+              </button>
+            </div>
+            <button
+              onClick={() => {
+                if (product.inventory.status !== 'out-of-stock') {
+                  addItem(product, qty);
+                  toast.success(`Added ${qty}x ${product.name} to cart`);
+                }
+              }}
+              disabled={product.inventory.status === 'out-of-stock'}
+              style={{
+                flex: 1, padding: '14px 24px',
+                borderRadius: 'var(--radius-md)',
+                background: product.inventory.status === 'out-of-stock'
+                  ? 'var(--fp-gray-200)' : 'linear-gradient(135deg, var(--fp-amber), var(--fp-amber-dark))',
+                color: product.inventory.status === 'out-of-stock' ? 'var(--fp-gray-400)' : 'white',
+                border: 'none',
+                cursor: product.inventory.status === 'out-of-stock' ? 'not-allowed' : 'pointer',
+                fontSize: 15, fontWeight: 700, fontFamily: 'var(--font-heading)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <ShoppingBag size={18} />
+              {product.inventory.status === 'out-of-stock' ? 'Out of Stock' : 'Add to Cart'}
+            </button>
           </div>
 
           {/* CTA */}

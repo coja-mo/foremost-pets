@@ -6,9 +6,11 @@ import { useForemostStore } from '@/lib/store';
 import { BRANDS } from '@/lib/store-config';
 import StorefrontHeader from '@/components/StorefrontHeader';
 import StorefrontFooter from '@/components/StorefrontFooter';
+import { useCart } from '@/components/CartContext';
+import toast from 'react-hot-toast';
 import {
   Search, Filter, Grid3x3, List, ChevronDown, SlidersHorizontal,
-  Dog, Cat, Fish, Package, Star, ArrowUpDown,
+  Dog, Cat, Fish, Package, Star, ArrowUpDown, ShoppingBag,
 } from 'lucide-react';
 
 const CATEGORIES = [
@@ -33,6 +35,7 @@ const PET_TYPES = [
 
 export default function ShopPage() {
   const { products } = useForemostStore();
+  const { addItem } = useCart();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const [petType, setPetType] = useState('all');
@@ -302,6 +305,31 @@ export default function ShopPage() {
                         {product.inventory.status === 'in-stock' ? '✓ In Stock' : product.inventory.status === 'low-stock' ? '⚠ Low Stock' : '✗ Out of Stock'}
                       </span>
                     </div>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (product.inventory.status !== 'out-of-stock') {
+                          addItem(product);
+                          toast.success(`Added ${product.name} to cart`);
+                        }
+                      }}
+                      disabled={product.inventory.status === 'out-of-stock'}
+                      style={{
+                        width: '100%', marginTop: 10, padding: '10px 0',
+                        borderRadius: 'var(--radius-md)',
+                        border: 'none', cursor: product.inventory.status === 'out-of-stock' ? 'not-allowed' : 'pointer',
+                        background: product.inventory.status === 'out-of-stock' ? 'var(--fp-gray-100)' : 'var(--fp-navy)',
+                        color: product.inventory.status === 'out-of-stock' ? 'var(--fp-gray-400)' : 'white',
+                        fontSize: 12, fontWeight: 700,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                        transition: 'all 0.2s ease',
+                        opacity: product.inventory.status === 'out-of-stock' ? 0.6 : 1,
+                      }}
+                    >
+                      <ShoppingBag size={13} />
+                      {product.inventory.status === 'out-of-stock' ? 'Out of Stock' : 'Add to Cart'}
+                    </button>
                   </div>
                 </div>
               </Link>
