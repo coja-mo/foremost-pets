@@ -11,7 +11,9 @@ import toast from 'react-hot-toast';
 import {
   Search, Filter, Grid3x3, List, ChevronDown, SlidersHorizontal,
   Dog, Cat, Fish, Package, Star, ArrowUpDown, ShoppingBag,
+  PawPrint, ChevronLeft, ChevronRight, Flame,
 } from 'lucide-react';
+import { useRef } from 'react';
 
 const CATEGORIES = [
   { id: 'all', label: 'All Products' },
@@ -93,6 +95,58 @@ export default function ShopPage() {
           </p>
         </div>
       </section>
+
+      {/* Sticky Department Sub-Nav */}
+      <div style={{
+        position: 'sticky', top: 72, zIndex: 40,
+        background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid var(--fp-gray-100)',
+        padding: '0 24px',
+      }}>
+        <div style={{
+          maxWidth: 1280, margin: '0 auto',
+          display: 'flex', alignItems: 'center', gap: 6,
+          overflowX: 'auto', paddingBottom: 0,
+          scrollbarWidth: 'none',
+        }}>
+          {/* Pet type quick filters */}
+          {PET_TYPES.map(pt => (
+            <button key={pt.id} onClick={() => setPetType(pt.id)} style={{
+              display: 'flex', alignItems: 'center', gap: 5,
+              padding: '12px 16px', whiteSpace: 'nowrap',
+              borderBottom: `2px solid ${petType === pt.id ? 'var(--fp-amber)' : 'transparent'}`,
+              background: 'transparent', border: 'none',
+              borderBottomWidth: 2, borderBottomStyle: 'solid',
+              borderBottomColor: petType === pt.id ? 'var(--fp-amber)' : 'transparent',
+              cursor: 'pointer', fontSize: 13, fontWeight: petType === pt.id ? 700 : 500,
+              color: petType === pt.id ? 'var(--fp-amber-dark)' : 'var(--fp-gray-400)',
+              transition: 'all 0.2s ease',
+            }}>
+              <pt.icon size={14} /> {pt.label}
+            </button>
+          ))}
+
+          <div style={{ width: 1, height: 24, background: 'var(--fp-gray-200)', margin: '0 4px', flexShrink: 0 }} />
+
+          {/* Category quick filters */}
+          {CATEGORIES.map(cat => (
+            <button key={cat.id} onClick={() => setCategory(cat.id)} style={{
+              padding: '12px 14px', whiteSpace: 'nowrap',
+              background: 'transparent', border: 'none',
+              borderBottomWidth: 2, borderBottomStyle: 'solid',
+              borderBottomColor: category === cat.id ? 'var(--fp-navy)' : 'transparent',
+              cursor: 'pointer', fontSize: 13, fontWeight: category === cat.id ? 700 : 500,
+              color: category === cat.id ? 'var(--fp-navy)' : 'var(--fp-gray-400)',
+              transition: 'all 0.2s ease',
+            }}>
+              {cat.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Best Sellers Carousel */}
+      <BestSellersCarousel products={activeProducts} addItem={addItem} />
 
       <div style={{
         maxWidth: 1280, margin: '0 auto', padding: '32px 24px',
@@ -391,5 +445,137 @@ export default function ShopPage() {
 
       <StorefrontFooter />
     </div>
+  );
+}
+
+/* ===== Best Sellers Carousel ===== */
+function BestSellersCarousel({ products, addItem }: { products: any[]; addItem: (p: any) => void }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const bestSellers = products.filter(p => p.isFeatured).slice(0, 10);
+
+  if (bestSellers.length === 0) return null;
+
+  const scroll = (dir: 'left' | 'right') => {
+    if (!scrollRef.current) return;
+    const amount = 280;
+    scrollRef.current.scrollBy({ left: dir === 'left' ? -amount : amount, behavior: 'smooth' });
+  };
+
+  return (
+    <section style={{
+      maxWidth: 1280, margin: '0 auto', padding: '32px 24px 8px',
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{
+            width: 32, height: 32, borderRadius: 'var(--radius-md)',
+            background: 'linear-gradient(135deg, #ef4444, #f97316)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Flame size={16} color="white" />
+          </div>
+          <h2 style={{
+            fontFamily: 'var(--font-heading)', fontSize: 20, fontWeight: 800,
+            color: 'var(--fp-navy)',
+          }}>Best Sellers</h2>
+        </div>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button onClick={() => scroll('left')} style={{
+            width: 32, height: 32, borderRadius: 'var(--radius-full)',
+            border: '1px solid var(--fp-gray-200)', background: 'white',
+            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: 'var(--fp-gray-400)', transition: 'all 0.2s ease',
+          }}><ChevronLeft size={16} /></button>
+          <button onClick={() => scroll('right')} style={{
+            width: 32, height: 32, borderRadius: 'var(--radius-full)',
+            border: '1px solid var(--fp-gray-200)', background: 'white',
+            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: 'var(--fp-gray-400)', transition: 'all 0.2s ease',
+          }}><ChevronRight size={16} /></button>
+        </div>
+      </div>
+
+      <div style={{ position: 'relative' }}>
+        {/* Fade edges */}
+        <div style={{
+          position: 'absolute', left: 0, top: 0, bottom: 0, width: 40,
+          background: 'linear-gradient(90deg, var(--fp-bg), transparent)',
+          zIndex: 2, pointerEvents: 'none',
+        }} />
+        <div style={{
+          position: 'absolute', right: 0, top: 0, bottom: 0, width: 40,
+          background: 'linear-gradient(270deg, var(--fp-bg), transparent)',
+          zIndex: 2, pointerEvents: 'none',
+        }} />
+
+        <div ref={scrollRef} style={{
+          display: 'flex', gap: 16, overflowX: 'auto',
+          scrollbarWidth: 'none', padding: '4px 0 12px',
+          scrollSnapType: 'x mandatory',
+        }}>
+          {bestSellers.map(product => (
+            <Link key={product.id} href={`/shop/${product.slug}`} style={{
+              flexShrink: 0, width: 240, scrollSnapAlign: 'start',
+              background: 'white', borderRadius: 'var(--radius-lg)',
+              border: '1px solid var(--fp-gray-100)',
+              overflow: 'hidden', textDecoration: 'none',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            }}>
+              {/* Image placeholder */}
+              <div style={{
+                height: 140, position: 'relative',
+                background: `linear-gradient(135deg, ${
+                  product.petType.includes('dog') ? '#fef3c7' : product.petType.includes('cat') ? '#dbeafe' : '#d1fae5'
+                }, white)`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <PawPrint size={28} strokeWidth={1.5} color="var(--fp-gray-200)" />
+                <span style={{
+                  position: 'absolute', top: 8, left: 8,
+                  fontSize: 9, fontWeight: 700, padding: '3px 8px',
+                  borderRadius: 'var(--radius-full)',
+                  background: 'linear-gradient(135deg, #ef4444, #f97316)',
+                  color: 'white', textTransform: 'uppercase',
+                  display: 'flex', alignItems: 'center', gap: 3,
+                }}>
+                  <Star size={8} fill="white" /> Best Seller
+                </span>
+              </div>
+              <div style={{ padding: '14px 16px' }}>
+                <div style={{
+                  fontSize: 10, fontWeight: 600, color: 'var(--fp-amber-dark)',
+                  textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 2,
+                }}>{product.brand}</div>
+                <div style={{
+                  fontSize: 14, fontWeight: 700, color: 'var(--fp-navy)',
+                  marginBottom: 8, lineHeight: 1.3,
+                  overflow: 'hidden', textOverflow: 'ellipsis',
+                  display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as any,
+                }}>{product.name}</div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{
+                    fontSize: 18, fontWeight: 800, fontFamily: 'var(--font-heading)',
+                    color: 'var(--fp-navy)',
+                  }}>${product.price.toFixed(2)}</span>
+                  <button onClick={(e) => {
+                    e.preventDefault();
+                    addItem(product);
+                    toast.success(`${product.name} added!`);
+                  }} style={{
+                    width: 32, height: 32, borderRadius: 'var(--radius-full)',
+                    background: 'var(--fp-navy)', color: 'white',
+                    border: 'none', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    transition: 'transform 0.2s ease',
+                  }}>
+                    <ShoppingBag size={13} />
+                  </button>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
