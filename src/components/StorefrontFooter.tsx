@@ -65,8 +65,10 @@ export default function StorefrontFooter() {
               { href: '/gift-cards', label: 'Gift Cards' },
               { href: '/autoship', label: 'AutoShip & Save' },
               { href: '/pet-care', label: 'Pet Care Tips' },
+              { href: '/faq', label: 'FAQ' },
               { href: '/about', label: 'About Us' },
               { href: '/contact', label: 'Contact' },
+              { href: '/admin', label: 'Staff Portal' },
             ].map(link => (
               <Link key={link.href} href={link.href} style={{
                 color: 'rgba(255,255,255,0.6)', textDecoration: 'none',

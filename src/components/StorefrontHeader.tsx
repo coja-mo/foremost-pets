@@ -7,7 +7,7 @@ import { useCart } from './CartContext';
 import { useStoreLocation } from './StoreLocationContext';
 import { useForemostStore } from '@/lib/store';
 import {
-  PawPrint, Menu, X, MapPin, Phone, Clock,
+  PawPrint, Menu, X, MapPin, Phone, Clock, User,
   ShoppingBag, Search, ArrowRight, ChevronDown, CheckCircle2,
 } from 'lucide-react';
 
@@ -29,8 +29,8 @@ export default function StorefrontHeader() {
     { href: '/our-stores', label: 'Our Stores' },
     { href: '/loyalty', label: 'Paw Rewards' },
     { href: '/gift-cards', label: 'Gift Cards' },
-    { href: '/autoship', label: 'AutoShip' },
     { href: '/pet-care', label: 'Pet Care' },
+    { href: '/faq', label: 'FAQ' },
     { href: '/about', label: 'About' },
     { href: '/contact', label: 'Contact' },
   ];
@@ -324,15 +324,6 @@ export default function StorefrontHeader() {
               )}
             </button>
 
-            {/* Staff Portal */}
-            <Link href="/admin" style={{
-              padding: '10px 22px', borderRadius: 'var(--radius-full)',
-              background: 'var(--fp-navy)', color: 'white',
-              fontSize: 13, fontWeight: 600, textDecoration: 'none',
-              transition: 'all 0.2s ease',
-            }}>
-              Staff Portal
-            </Link>
 
             {/* Mobile menu button */}
             <button onClick={() => setMenuOpen(!menuOpen)} style={{
@@ -344,22 +335,111 @@ export default function StorefrontHeader() {
           </div>
         </div>
 
-        {/* Mobile nav dropdown */}
+        {/* Enhanced mobile menu — full screen drawer */}
         {menuOpen && (
-          <div style={{
-            padding: '12px 24px 20px', borderTop: '1px solid var(--fp-gray-100)',
-            display: 'flex', flexDirection: 'column', gap: 4,
-          }} className="storefront-mobile-nav">
-            {navLinks.map(link => (
-              <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} style={{
-                padding: '12px 16px', borderRadius: 'var(--radius-md)',
-                fontSize: 15, fontWeight: 500, color: 'var(--fp-navy)',
-                textDecoration: 'none',
+          <>
+            <div onClick={() => setMenuOpen(false)} style={{
+              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
+              backdropFilter: 'blur(4px)', zIndex: 100,
+              animation: 'fadeIn 0.2s ease',
+            }} />
+            <div className="animate-slide-in-right" style={{
+              position: 'fixed', top: 0, right: 0, bottom: 0,
+              width: 340, maxWidth: '85vw', background: 'white',
+              zIndex: 101, display: 'flex', flexDirection: 'column',
+              boxShadow: '-8px 0 32px rgba(0,0,0,0.12)',
+            }}>
+              {/* Mobile menu header */}
+              <div style={{
+                padding: '16px 20px', borderBottom: '1px solid var(--fp-gray-100)',
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               }}>
-                {link.label}
-              </Link>
-            ))}
-          </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{
+                    width: 32, height: 32, borderRadius: 8,
+                    background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}><PawPrint size={16} color="white" /></div>
+                  <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: 16, color: 'var(--fp-navy)' }}>FOREMOST</span>
+                </div>
+                <button onClick={() => setMenuOpen(false)} style={{
+                  background: 'none', border: 'none', cursor: 'pointer', color: 'var(--fp-gray-400)', padding: 4,
+                }}><X size={22} /></button>
+              </div>
+
+              {/* Store selector in mobile */}
+              <div style={{ padding: '12px 20px', borderBottom: '1px solid var(--fp-gray-100)' }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--fp-gray-400)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
+                  Your Store
+                </div>
+                {allStores.map(store => (
+                  <button key={store.id} onClick={() => setStoreById(store.id)} style={{
+                    display: 'flex', alignItems: 'center', gap: 10, width: '100%',
+                    padding: '10px 12px', borderRadius: 'var(--radius-md)', marginBottom: 4,
+                    border: `1.5px solid ${currentStore.id === store.id ? 'var(--fp-amber)' : 'var(--fp-gray-100)'}`,
+                    background: currentStore.id === store.id ? 'var(--fp-amber-glow)' : 'transparent',
+                    cursor: 'pointer', textAlign: 'left',
+                  }}>
+                    <MapPin size={14} color={currentStore.id === store.id ? 'var(--fp-amber-dark)' : 'var(--fp-gray-300)'} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--fp-navy)' }}>{store.shortName}</div>
+                      <div style={{ fontSize: 11, color: 'var(--fp-gray-400)' }}>{store.phone}</div>
+                    </div>
+                    {currentStore.id === store.id && (
+                      <div style={{
+                        width: 7, height: 7, borderRadius: '50%',
+                        background: storeOpen ? 'var(--fp-success)' : 'var(--fp-error)',
+                        boxShadow: storeOpen ? '0 0 6px rgba(16,185,129,0.5)' : '0 0 6px rgba(239,68,68,0.5)',
+                      }} />
+                    )}
+                  </button>
+                ))}
+              </div>
+
+              {/* Nav links */}
+              <div style={{ flex: 1, overflowY: 'auto', padding: '12px 16px' }}>
+                {navLinks.map(link => {
+                  const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+                  return (
+                    <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} style={{
+                      display: 'block', padding: '14px 16px', borderRadius: 'var(--radius-md)',
+                      fontSize: 15, fontWeight: isActive ? 700 : 500,
+                      color: isActive ? 'var(--fp-amber-dark)' : 'var(--fp-navy)',
+                      background: isActive ? 'var(--fp-amber-glow)' : 'transparent',
+                      textDecoration: 'none', marginBottom: 2,
+                      transition: 'background 0.15s ease',
+                    }}>
+                      {link.label}
+                    </Link>
+                  );
+                })}
+              </div>
+
+              {/* Bottom actions */}
+              <div style={{
+                padding: '16px 20px', borderTop: '1px solid var(--fp-gray-100)',
+                display: 'flex', gap: 8,
+              }}>
+                <Link href="/account" onClick={() => setMenuOpen(false)} style={{
+                  flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                  padding: '12px', borderRadius: 'var(--radius-md)',
+                  border: '1px solid var(--fp-gray-200)', background: 'white',
+                  fontSize: 13, fontWeight: 600, color: 'var(--fp-navy)', textDecoration: 'none',
+                }}>
+                  <User size={14} /> Account
+                </Link>
+                <button onClick={() => { setMenuOpen(false); toggleCart(); }} style={{
+                  flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                  padding: '12px', borderRadius: 'var(--radius-md)',
+                  background: 'var(--fp-amber)', color: 'white',
+                  border: 'none', cursor: 'pointer',
+                  fontSize: 13, fontWeight: 700,
+                }}>
+                  <ShoppingBag size={14} /> Cart {itemCount > 0 && `(${itemCount})`}
+                </button>
+              </div>
+            </div>
+          </>
         )}
       </header>
 
