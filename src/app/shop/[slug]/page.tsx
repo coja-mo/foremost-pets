@@ -19,7 +19,7 @@ export default function ProductDetailPage() {
   const { products } = useForemostStore();
   const { addItem } = useCart();
   const [qty, setQty] = useState(1);
-  const product = products.find(p => p.id === params.slug);
+  const product = products.find(p => p.id === params.slug || p.slug === params.slug);
 
   if (!product) {
     return (

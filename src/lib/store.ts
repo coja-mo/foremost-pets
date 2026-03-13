@@ -781,6 +781,7 @@ export const useForemostStore = create<ForemostStore>()(
     }),
     {
       name: 'foremost-pets-store',
+      version: 2,
       partialize: (state) => ({
         products: state.products,
         customers: state.customers,
@@ -793,6 +794,22 @@ export const useForemostStore = create<ForemostStore>()(
         currentEmployee: state.currentEmployee,
         selectedLocation: state.selectedLocation,
       }),
+      merge: (persistedState: any, currentState: ForemostStore) => {
+        // Always use fresh seed product images — merge persisted inventory/quantity 
+        // changes but keep images from seed data
+        const mergedProducts = currentState.products.map(seedProduct => {
+          const persisted = persistedState?.products?.find((p: Product) => p.id === seedProduct.id);
+          if (persisted) {
+            return { ...persisted, images: seedProduct.images };
+          }
+          return seedProduct;
+        });
+        return {
+          ...currentState,
+          ...persistedState,
+          products: mergedProducts,
+        };
+      },
     }
   )
 );
