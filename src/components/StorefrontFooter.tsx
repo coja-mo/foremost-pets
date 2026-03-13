@@ -63,6 +63,8 @@ export default function StorefrontFooter() {
               { href: '/our-stores', label: 'Our Stores' },
               { href: '/loyalty', label: 'Paw Rewards' },
               { href: '/gift-cards', label: 'Gift Cards' },
+              { href: '/autoship', label: 'AutoShip & Save' },
+              { href: '/pet-care', label: 'Pet Care Tips' },
               { href: '/about', label: 'About Us' },
               { href: '/contact', label: 'Contact' },
             ].map(link => (

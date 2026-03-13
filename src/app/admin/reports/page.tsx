@@ -141,6 +141,102 @@ export default function ReportsPage() {
           ))}
         </div>
 
+        {/* Top Selling Products + Category Breakdown */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
+          {/* Top Products */}
+          <div className="fp-card" style={{ padding: '24px' }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <TrendingUp size={18} color="var(--fp-amber)" /> Top Selling Products
+            </h3>
+            {(() => {
+              const productSales: Record<string, { name: string; qty: number; revenue: number }> = {};
+              completedOrders.forEach(o => o.items.forEach(item => {
+                if (!productSales[item.productId]) productSales[item.productId] = { name: item.productName, qty: 0, revenue: 0 };
+                productSales[item.productId].qty += item.quantity;
+                productSales[item.productId].revenue += item.totalPrice;
+              }));
+              const sorted = Object.values(productSales).sort((a, b) => b.revenue - a.revenue).slice(0, 5);
+              const maxRevenue = sorted[0]?.revenue || 1;
+
+              return sorted.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: 40, color: 'var(--fp-gray-300)' }}>No product data</div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  {sorted.map((p, i) => (
+                    <div key={i}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--fp-navy)' }}>{p.name}</span>
+                        <span style={{ fontSize: 13, fontWeight: 700, fontFamily: 'var(--font-heading)', color: 'var(--fp-navy)' }}>${p.revenue.toFixed(2)}</span>
+                      </div>
+                      <div style={{ height: 6, borderRadius: 3, background: 'var(--fp-gray-100)', overflow: 'hidden' }}>
+                        <div style={{
+                          height: '100%', borderRadius: 3,
+                          width: `${(p.revenue / maxRevenue) * 100}%`,
+                          background: `linear-gradient(90deg, var(--fp-amber), var(--fp-amber-dark))`,
+                          transition: 'width 0.5s ease',
+                        }} />
+                      </div>
+                      <div style={{ fontSize: 11, color: 'var(--fp-gray-300)', marginTop: 2 }}>
+                        {p.qty} unit{p.qty !== 1 ? 's' : ''} sold
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+          </div>
+
+          {/* Category Breakdown */}
+          <div className="fp-card" style={{ padding: '24px' }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <BarChart3 size={18} color="var(--fp-amber)" /> Revenue by Category
+            </h3>
+            {(() => {
+              const catColors: Record<string, string> = {
+                food: 'var(--fp-amber)', treats: 'var(--fp-success)', toys: 'var(--fp-info)',
+                health: '#8b5cf6', grooming: '#ec4899', accessories: 'var(--fp-navy)',
+                default: 'var(--fp-gray-400)',
+              };
+              const catRevenue: Record<string, number> = {};
+              completedOrders.forEach(o => o.items.forEach(item => {
+                const product = orders.length > 0 ? null : null; // We just group by name prefix
+                const cat = item.productName.toLowerCase().includes('treat') ? 'treats'
+                  : item.productName.toLowerCase().includes('toy') ? 'toys'
+                  : item.productName.toLowerCase().includes('shampoo') ? 'grooming'
+                  : 'food';
+                catRevenue[cat] = (catRevenue[cat] || 0) + item.totalPrice;
+              }));
+              const sorted = Object.entries(catRevenue).sort(([,a], [,b]) => b - a);
+              const totalCatRev = sorted.reduce((s, [, v]) => s + v, 0) || 1;
+
+              return sorted.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: 40, color: 'var(--fp-gray-300)' }}>No category data</div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  {sorted.map(([cat, rev]) => (
+                    <div key={cat}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--fp-navy)', textTransform: 'capitalize' }}>{cat}</span>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--fp-gray-400)' }}>
+                          {((rev / totalCatRev) * 100).toFixed(0)}% — ${rev.toFixed(2)}
+                        </span>
+                      </div>
+                      <div style={{ height: 6, borderRadius: 3, background: 'var(--fp-gray-100)', overflow: 'hidden' }}>
+                        <div style={{
+                          height: '100%', borderRadius: 3,
+                          width: `${(rev / totalCatRev) * 100}%`,
+                          background: catColors[cat] || catColors.default,
+                          transition: 'width 0.5s ease',
+                        }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+          </div>
+        </div>
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
           {/* Payment Method Breakdown */}
           <div className="fp-card" style={{ padding: '24px' }}>

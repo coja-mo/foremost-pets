@@ -29,6 +29,8 @@ export default function StorefrontHeader() {
     { href: '/our-stores', label: 'Our Stores' },
     { href: '/loyalty', label: 'Paw Rewards' },
     { href: '/gift-cards', label: 'Gift Cards' },
+    { href: '/autoship', label: 'AutoShip' },
+    { href: '/pet-care', label: 'Pet Care' },
     { href: '/about', label: 'About' },
     { href: '/contact', label: 'Contact' },
   ];
