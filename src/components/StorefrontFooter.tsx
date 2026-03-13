@@ -143,7 +143,7 @@ export default function StorefrontFooter() {
           <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             Built with 💛 in SSM by{' '}
             <a
-              href="https://antigravitysolutionsnorth.com"
+              href="https://www.antigravitysolutions.ca"
               target="_blank"
               rel="noopener noreferrer"
               style={{
