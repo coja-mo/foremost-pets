@@ -10,6 +10,15 @@ import {
 } from 'lucide-react';
 
 export default function OurStoresPage() {
+  // Check if store is currently open (Mon–Sat 9–18, Sun 11–16)
+  const isStoreOpen = () => {
+    const now = new Date();
+    const day = now.getDay(); // 0 = Sunday
+    const hour = now.getHours();
+    if (day === 0) return hour >= 11 && hour < 16; // Sunday
+    return hour >= 9 && hour < 18; // Mon-Sat
+  };
+
   return (
     <div style={{ minHeight: '100vh', background: 'var(--fp-bg)' }}>
       <StorefrontHeader />
@@ -51,34 +60,20 @@ export default function OurStoresPage() {
               overflow: 'hidden',
               boxShadow: 'var(--shadow-md)',
             }}>
-              {/* Map placeholder */}
+              {/* Map embed */}
               <div style={{
-                background: 'linear-gradient(135deg, #e2e8f0, #f1f5f9)',
-                display: 'flex', flexDirection: 'column',
-                alignItems: 'center', justifyContent: 'center',
                 position: 'relative', minHeight: 400,
                 order: idx % 2 === 1 ? 2 : 1,
+                overflow: 'hidden',
               }}>
-                <MapPin size={48} style={{ opacity: 0.15, marginBottom: 12 }} />
-                <span style={{
-                  fontSize: 14, fontWeight: 600, color: 'var(--fp-gray-400)',
-                  marginBottom: 16,
-                }}>
-                  {location.address.street}
-                </span>
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${location.coordinates.lat},${location.coordinates.lng}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <iframe
+                  src={`https://www.openstreetmap.org/export/embed.html?bbox=${location.coordinates.lng - 0.01},${location.coordinates.lat - 0.008},${location.coordinates.lng + 0.01},${location.coordinates.lat + 0.008}&layer=mapnik&marker=${location.coordinates.lat},${location.coordinates.lng}`}
                   style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 6,
-                    padding: '10px 20px', borderRadius: 'var(--radius-full)',
-                    background: 'var(--fp-navy)', color: 'white',
-                    fontSize: 13, fontWeight: 600, textDecoration: 'none',
+                    width: '100%', height: '100%', border: 'none',
+                    position: 'absolute', inset: 0,
                   }}
-                >
-                  <Navigation size={14} /> Open in Google Maps
-                </a>
+                  loading="lazy"
+                />
                 {location.isPrimary && (
                   <div style={{
                     position: 'absolute', top: 16, left: 16,
@@ -86,10 +81,28 @@ export default function OurStoresPage() {
                     background: 'var(--fp-amber)', color: 'white',
                     fontSize: 11, fontWeight: 700, padding: '5px 12px',
                     borderRadius: 'var(--radius-full)',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
                   }}>
                     <Star size={12} /> Main Location
                   </div>
                 )}
+                {/* Open/Closed badge */}
+                <div style={{
+                  position: 'absolute', bottom: 16, left: 16,
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  background: 'white', padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                  fontSize: 12, fontWeight: 700,
+                }}>
+                  <div style={{
+                    width: 8, height: 8, borderRadius: '50%',
+                    background: isStoreOpen() ? 'var(--fp-success)' : 'var(--fp-error)',
+                  }} />
+                  <span style={{ color: isStoreOpen() ? 'var(--fp-success)' : 'var(--fp-error)' }}>
+                    {isStoreOpen() ? 'Open Now' : 'Closed'}
+                  </span>
+                </div>
               </div>
 
               {/* Store details */}

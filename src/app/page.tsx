@@ -6,6 +6,7 @@ import { useForemostStore } from '@/lib/store';
 import { BRANDS, LOYALTY_CONFIG, STORE_LOCATIONS } from '@/lib/store-config';
 import StorefrontHeader from '@/components/StorefrontHeader';
 import StorefrontFooter from '@/components/StorefrontFooter';
+import PromoBanner from '@/components/PromoBanner';
 import {
   ArrowRight, Star, Truck, Shield, Heart, MapPin, Phone, Clock,
   PawPrint, Dog, Cat, Fish, Package, Award, Sparkles, ChevronRight,
@@ -56,6 +57,7 @@ export default function HomePage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--fp-bg)' }}>
+      <PromoBanner />
       <StorefrontHeader />
 
       {/* ===== HERO ===== */}
@@ -461,9 +463,96 @@ export default function HomePage() {
         </section>
       </Section>
 
+      {/* ===== TESTIMONIALS ===== */}
+      <Section>
+        <section style={{ padding: '64px 24px' }}>
+          <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: 48 }}>
+              <span style={{
+                fontSize: 13, fontWeight: 700, color: 'var(--fp-amber-dark)',
+                textTransform: 'uppercase', letterSpacing: '0.1em',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginBottom: 8,
+              }}>
+                <Heart size={14} /> What Pet Parents Say
+              </span>
+              <h2 style={{
+                fontFamily: 'var(--font-heading)', fontSize: 32, fontWeight: 800,
+                color: 'var(--fp-navy)',
+              }}>Trusted by Sault Ste. Marie&apos;s Pet Community</h2>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
+              {[
+                {
+                  name: 'Sarah M.', pet: 'Dog Mom to Max',
+                  text: 'The staff really knows their stuff! They helped us find the perfect food for Max\'s sensitive stomach. We\'ve been shopping here for 3 years and wouldn\'t go anywhere else.',
+                  rating: 5,
+                },
+                {
+                  name: 'James T.', pet: 'Cat Dad to Luna & Milo',
+                  text: 'Finally a pet store that stocks premium brands at fair prices. The Paw Rewards program is great — I\'ve already saved over $200 this year.',
+                  rating: 5,
+                },
+                {
+                  name: 'Emily R.', pet: 'Aquarium Enthusiast',
+                  text: 'Love the fish selection at the Second Line location! The team always has great advice on tank maintenance and compatible species. Truly passionate about pets.',
+                  rating: 5,
+                },
+              ].map((review, i) => (
+                <div key={i} style={{
+                  background: 'white', borderRadius: 'var(--radius-xl)',
+                  border: '1px solid var(--fp-gray-100)',
+                  padding: '28px 24px',
+                  display: 'flex', flexDirection: 'column',
+                }}>
+                  <div style={{ display: 'flex', gap: 2, marginBottom: 14 }}>
+                    {Array.from({ length: review.rating }).map((_, j) => (
+                      <Star key={j} size={14} fill="#f59e0b" color="#f59e0b" />
+                    ))}
+                  </div>
+                  <p style={{
+                    fontSize: 14, color: 'var(--fp-gray-500)', lineHeight: 1.8,
+                    flex: 1, fontStyle: 'italic',
+                  }}>
+                    &ldquo;{review.text}&rdquo;
+                  </p>
+                  <div style={{ marginTop: 18, borderTop: '1px solid var(--fp-gray-100)', paddingTop: 14 }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--fp-navy)' }}>{review.name}</div>
+                    <div style={{ fontSize: 12, color: 'var(--fp-gray-400)' }}>{review.pet}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </Section>
+
+      {/* ===== BRAND TRUST STRIP ===== */}
+      <Section>
+        <section style={{ padding: '40px 24px', background: 'white' }}>
+          <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
+            <p style={{
+              fontSize: 12, fontWeight: 700, color: 'var(--fp-gray-300)',
+              textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 24,
+            }}>Trusted Brands We Carry</p>
+            <div style={{
+              display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 20,
+            }}>
+              {['Fromm', 'GO! Solutions', 'ACANA', 'ORIJEN', 'Stella & Chewy\'s', 'Open Farm', 'Ziwi Peak', 'Nulo'].map(brand => (
+                <span key={brand} style={{
+                  fontSize: 14, fontWeight: 700, color: 'var(--fp-gray-300)',
+                  fontFamily: 'var(--font-heading)',
+                  transition: 'color 0.2s ease',
+                }}>{brand}</span>
+              ))}
+            </div>
+          </div>
+        </section>
+      </Section>
+
       {/* ===== NEWSLETTER ===== */}
       <Section>
-        <section style={{ padding: '64px 24px', background: 'white' }}>
+        <section style={{ padding: '64px 24px', background: 'var(--fp-gray-50)' }}>
           <div style={{ maxWidth: 600, margin: '0 auto', textAlign: 'center' }}>
             <div style={{
               width: 56, height: 56, borderRadius: '50%',

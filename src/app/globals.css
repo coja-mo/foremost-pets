@@ -918,3 +918,38 @@ select.fp-input {
   background-position: right 12px center;
   padding-right: 36px;
 }
+
+/* ===== Shimmer Animation (Promo Banner) ===== */
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ===== Mobile Header Responsiveness ===== */
+@media (max-width: 768px) {
+  /* Hide top info bar on mobile */
+  .storefront-topbar { display: none !important; }
+
+  /* Hide desktop nav links */
+  .storefront-desktop-nav { display: none !important; }
+
+  /* Show mobile menu button */
+  .storefront-mobile-menu-btn { display: flex !important; }
+
+  /* Responsive grids for storefront pages */
+  .sf-testimonial-grid { grid-template-columns: 1fr !important; }
+  .sf-values-grid { grid-template-columns: 1fr 1fr !important; }
+  .sf-contact-grid { grid-template-columns: 1fr !important; }
+  .sf-gc-builder { grid-template-columns: 1fr !important; }
+  .sf-about-grid { grid-template-columns: 1fr !important; }
+  .sf-store-card { grid-template-columns: 1fr !important; }
+
+  /* Make store card map a fixed height */
+  .sf-store-card > div:first-child { min-height: 250px !important; }
+}
+
+@media (max-width: 640px) {
+  .sf-values-grid { grid-template-columns: 1fr !important; }
+  .sf-gc-denominations { grid-template-columns: repeat(3, 1fr) !important; }
+}
