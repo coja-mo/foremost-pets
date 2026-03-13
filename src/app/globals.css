@@ -959,3 +959,12 @@ select.fp-input {
   .sf-values-grid { grid-template-columns: 1fr !important; }
   .sf-gc-denominations { grid-template-columns: repeat(3, 1fr) !important; }
 }
+
+/* ===== Shop Page Mobile ===== */
+@media (max-width: 768px) {
+  /* Product detail: stack image and info vertically */
+  section[style*="gridTemplateColumns: '1fr 1fr'"],
+  section[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+}

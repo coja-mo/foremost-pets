@@ -156,6 +156,31 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ===== SHIPPING / PICKUP BANNER ===== */}
+      <section style={{
+        background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+        padding: '14px 24px',
+      }}>
+        <div style={{
+          maxWidth: 1280, margin: '0 auto',
+          display: 'flex', justifyContent: 'center', gap: 40, flexWrap: 'wrap',
+        }}>
+          {[
+            { icon: MapPin, text: 'Free In-Store Pickup' },
+            { icon: Truck, text: 'Flat Rate Shipping Across Ontario' },
+            { icon: Repeat, text: 'AutoShip & Save 10%' },
+          ].map((item, i) => (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'center', gap: 8,
+              fontSize: 13, fontWeight: 700, color: 'white',
+            }}>
+              <item.icon size={16} />
+              {item.text}
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ===== TRUST STRIP ===== */}
       <section style={{
         background: 'white', borderBottom: '1px solid var(--fp-gray-100)',
@@ -222,9 +247,15 @@ export default function HomePage() {
                         height: 200,
                         background: PET_GRADIENT[primaryPet] || PET_GRADIENT.dog,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        position: 'relative',
+                        position: 'relative', overflow: 'hidden',
                       }}>
-                        <PetIcon size={56} strokeWidth={1} style={{ opacity: 0.2, color: 'var(--fp-navy)' }} />
+                        {product.images?.[0] ? (
+                          <img src={product.images[0]} alt={product.name} style={{
+                            width: '100%', height: '100%', objectFit: 'cover',
+                          }} />
+                        ) : (
+                          <PetIcon size={56} strokeWidth={1} style={{ opacity: 0.2, color: 'var(--fp-navy)' }} />
+                        )}
                         {product.isFeatured && (
                           <div style={{
                             position: 'absolute', top: 12, left: 12,

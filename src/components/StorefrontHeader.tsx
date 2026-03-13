@@ -509,9 +509,13 @@ export default function StorefrontHeader() {
                         width: 40, height: 40, borderRadius: 'var(--radius-md)',
                         background: 'var(--fp-gray-50)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        flexShrink: 0,
+                        flexShrink: 0, overflow: 'hidden',
                       }}>
-                        <PawPrint size={16} strokeWidth={1.5} color="var(--fp-gray-300)" />
+                        {product.images?.[0] ? (
+                          <img src={product.images[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        ) : (
+                          <PawPrint size={16} strokeWidth={1.5} color="var(--fp-gray-300)" />
+                        )}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{

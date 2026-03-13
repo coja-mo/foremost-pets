@@ -9,7 +9,7 @@ import StorefrontFooter from '@/components/StorefrontFooter';
 import { useCart } from '@/components/CartContext';
 import toast from 'react-hot-toast';
 import {
-  ArrowLeft, Shield, Truck, RotateCcw, Heart, Star,
+  ArrowLeft, Shield, Truck, RotateCcw, Heart, Star, Repeat,
   Dog, Cat, Fish, ChevronRight, Package, MapPin, ShoppingBag, Minus, Plus,
   PawPrint, Clock as ClockIcon,
 } from 'lucide-react';
@@ -247,6 +247,47 @@ export default function ProductDetailPage() {
               {product.inventory.status === 'out-of-stock' ? 'Out of Stock' : 'Add to Cart'}
             </button>
           </div>
+
+          {/* AutoShip Subscribe & Save */}
+          {product.isAutoShipEligible && (
+            <div style={{
+              border: '2px solid var(--fp-amber-glow)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '18px 20px', marginBottom: 28,
+              background: 'linear-gradient(135deg, rgba(245,158,11,0.04), rgba(245,158,11,0.08))',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+                <Repeat size={18} color="var(--fp-amber-dark)" />
+                <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--fp-navy)' }}>
+                  AutoShip & Save 10%
+                </span>
+                <span style={{
+                  marginLeft: 'auto', fontSize: 16, fontWeight: 800, color: 'var(--fp-amber-dark)',
+                  fontFamily: 'var(--font-heading)',
+                }}>
+                  ${(product.price * 0.9).toFixed(2)}
+                </span>
+              </div>
+              <p style={{ fontSize: 13, color: 'var(--fp-gray-400)', marginBottom: 14, lineHeight: 1.5 }}>
+                Set it and forget it — get automatic deliveries and save 10% on every order.
+              </p>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {[14, 30, 45, 60].map(days => (
+                  <button key={days} onClick={() => {
+                    addItem(product, qty);
+                    toast.success(`AutoShip scheduled: ${product.name} every ${days} days — saving 10%!`);
+                  }} style={{
+                    padding: '8px 16px', borderRadius: 'var(--radius-full)',
+                    border: '1px solid var(--fp-gray-200)', background: 'white',
+                    fontSize: 12, fontWeight: 600, color: 'var(--fp-navy)',
+                    cursor: 'pointer', transition: 'all 0.15s ease',
+                  }}>
+                    Every {days === 14 ? '2 weeks' : days === 30 ? '4 weeks' : days === 45 ? '6 weeks' : '8 weeks'}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* CTA */}
           <div style={{
