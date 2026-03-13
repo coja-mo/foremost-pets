@@ -100,7 +100,7 @@ export default function LoginPage() {
             opacity: 0.03 + i * 0.005,
             transform: `rotate(${-30 + i * 20}deg)`,
           }}>
-            🐾
+            <PawPrint size={28} color="var(--fp-amber)" />
           </div>
         ))}
       </div>

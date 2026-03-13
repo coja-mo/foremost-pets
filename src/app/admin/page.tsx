@@ -8,6 +8,7 @@ import {
   DollarSign, ShoppingCart, Users, TrendingUp, Package,
   ArrowUpRight, ArrowDownRight, PawPrint, Star, Heart,
   Clock, AlertTriangle, Gift, Repeat, BarChart3, CreditCard,
+  Medal, Crown, Gem, CheckCircle2,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -115,7 +116,7 @@ function LowStockAlerts() {
       {lowStock.length === 0 ? (
         <div style={{ padding: '40px 24px', textAlign: 'center', color: 'var(--fp-gray-300)' }}>
           <Package size={32} style={{ marginBottom: 8 }} />
-          <div style={{ fontSize: 14 }}>All stock levels healthy! 🎉</div>
+          <div style={{ fontSize: 14, display: 'flex', alignItems: 'center', gap: 6 }}><CheckCircle2 size={16} color="var(--fp-success)" /> All stock levels healthy!</div>
         </div>
       ) : (
         <div>
@@ -157,11 +158,11 @@ function TopCustomers() {
     'diamond-paw': 'var(--fp-tier-diamond)',
   };
 
-  const tierIcons: Record<string, string> = {
-    'paw': '🐾',
-    'silver-paw': '🥈',
-    'gold-paw': '⭐',
-    'diamond-paw': '💎',
+  const tierIconMap: Record<string, React.ElementType> = {
+    'paw': PawPrint,
+    'silver-paw': Medal,
+    'gold-paw': Crown,
+    'diamond-paw': Gem,
   };
 
   return (
@@ -187,9 +188,9 @@ function TopCustomers() {
             width: 40, height: 40, borderRadius: 'var(--radius-md)',
             background: `linear-gradient(135deg, ${tierColors[customer.loyaltyTier]}22, ${tierColors[customer.loyaltyTier]}44)`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 18, flexShrink: 0,
+            flexShrink: 0,
           }}>
-            {tierIcons[customer.loyaltyTier]}
+            {React.createElement(tierIconMap[customer.loyaltyTier] || PawPrint, { size: 18, color: tierColors[customer.loyaltyTier] })}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 14, fontWeight: 600 }}>
@@ -286,8 +287,8 @@ export default function DashboardPage() {
           marginBottom: 8,
         }}>
           <div>
-            <h1 style={{ fontSize: 28, fontWeight: 800 }}>
-              Welcome back <span style={{ color: 'var(--fp-amber)' }}>👋</span>
+            <h1 style={{ fontSize: 28, fontWeight: 800, display: 'flex', alignItems: 'center', gap: 12 }}>
+              Welcome back <PawPrint size={28} color="var(--fp-amber)" style={{ opacity: 0.8 }} />
             </h1>
             <p style={{ color: 'var(--fp-gray-400)', fontSize: 15, marginTop: 4 }}>
               Here&apos;s what&apos;s happening at Foremost Pets today

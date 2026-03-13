@@ -242,8 +242,8 @@ export default function ShopPage() {
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     position: 'relative',
                   }}>
-                    <div style={{ fontSize: viewMode === 'grid' ? 56 : 40, opacity: 0.3 }}>
-                      {product.petType.includes('dog') ? '🐕' : product.petType.includes('cat') ? '🐈' : '🐠'}
+                    <div style={{ opacity: 0.2 }}>
+                      {product.petType.includes('dog') ? <Dog size={viewMode === 'grid' ? 48 : 32} strokeWidth={1} color="var(--fp-navy)" /> : product.petType.includes('cat') ? <Cat size={viewMode === 'grid' ? 48 : 32} strokeWidth={1} color="var(--fp-navy)" /> : <Fish size={viewMode === 'grid' ? 48 : 32} strokeWidth={1} color="var(--fp-navy)" />}
                     </div>
                     {product.isFeatured && (
                       <div style={{
@@ -251,7 +251,7 @@ export default function ShopPage() {
                         background: 'var(--fp-amber)', color: 'white',
                         fontSize: 10, fontWeight: 700, padding: '3px 8px',
                         borderRadius: 'var(--radius-full)',
-                      }}>⭐ Featured</div>
+                      }}><Star size={10} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 2 }} /> Featured</div>
                     )}
                   </div>
                   <div style={{ padding: '14px 16px 18px', flex: 1 }}>

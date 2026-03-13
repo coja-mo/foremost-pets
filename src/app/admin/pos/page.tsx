@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import {
   Search, Plus, Minus, Trash2, User, CreditCard, DollarSign,
   Gift, Star, X, ShoppingCart, PawPrint, Check, ArrowRight,
-  Hash, Barcode, Tag, Package,
+  Hash, Barcode, Tag, Package, Medal, Crown, Gem,
 } from 'lucide-react';
 
 // ---- Product Quick Add ----
@@ -27,8 +27,8 @@ function ProductGrid({ onAdd }: { onAdd: (product: Product) => void }) {
 
   const categories = [
     { id: 'all', label: 'All' },
-    { id: 'dog', label: '🐕 Dog' },
-    { id: 'cat', label: '🐈 Cat' },
+    { id: 'dog', label: 'Dogs' },
+    { id: 'cat', label: 'Cats' },
     { id: 'food', label: 'Food' },
     { id: 'treats', label: 'Treats' },
     { id: 'toys', label: 'Toys' },
@@ -145,8 +145,13 @@ function CartPanel() {
     }
   };
 
-  const tierIcons: Record<string, string> = {
-    'paw': '🐾', 'silver-paw': '🥈', 'gold-paw': '⭐', 'diamond-paw': '💎',
+  const tierIconMap: Record<string, React.ElementType> = {
+    'paw': PawPrint, 'silver-paw': Medal, 'gold-paw': Crown, 'diamond-paw': Gem,
+  };
+
+  const tierColors: Record<string, string> = {
+    'paw': 'var(--fp-tier-paw)', 'silver-paw': 'var(--fp-tier-silver)',
+    'gold-paw': 'var(--fp-tier-gold)', 'diamond-paw': 'var(--fp-tier-diamond)',
   };
 
   return (
@@ -186,7 +191,9 @@ function CartPanel() {
             padding: '10px 14px', borderRadius: 'var(--radius-md)',
             background: 'var(--fp-amber-glow)', border: '1px solid rgba(245, 158, 11, 0.2)',
           }}>
-            <div style={{ fontSize: 20 }}>{tierIcons[cartCustomer.loyaltyTier]}</div>
+            <div style={{ width: 28, height: 28, borderRadius: '50%', background: `${tierColors[cartCustomer.loyaltyTier]}22`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {React.createElement(tierIconMap[cartCustomer.loyaltyTier] || PawPrint, { size: 14, color: tierColors[cartCustomer.loyaltyTier] })}
+            </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 14, fontWeight: 600 }}>
                 {cartCustomer.firstName} {cartCustomer.lastName}
@@ -238,7 +245,9 @@ function CartPanel() {
                     background: 'transparent', borderRadius: 'var(--radius-sm)',
                     cursor: 'pointer', textAlign: 'left', fontFamily: 'var(--font-body)',
                   }}>
-                    <span style={{ fontSize: 16 }}>{tierIcons[c.loyaltyTier]}</span>
+                    <span style={{ width: 22, height: 22, borderRadius: '50%', background: `${tierColors[c.loyaltyTier]}22`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {React.createElement(tierIconMap[c.loyaltyTier] || PawPrint, { size: 11, color: tierColors[c.loyaltyTier] })}
+                    </span>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 13, fontWeight: 600 }}>
                         {c.firstName} {c.lastName}
@@ -454,7 +463,7 @@ export default function POSPage() {
         </div>
         <ProductGrid onAdd={(product) => {
           addToCart(product);
-          toast.success(`Added ${product.name}`, { duration: 1500, icon: '🐾' });
+          toast.success(`Added ${product.name}`, { duration: 1500 });
         }} />
       </div>
       <CartPanel />

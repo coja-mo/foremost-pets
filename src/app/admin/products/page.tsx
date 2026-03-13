@@ -310,9 +310,9 @@ export default function ProductsPage() {
           style={{ width: 120 }}
         >
           <option value="all">All Pets</option>
-          <option value="dog">🐕 Dog</option>
-          <option value="cat">🐈 Cat</option>
-          <option value="fish">🐠 Fish</option>
+          <option value="dog">Dog</option>
+          <option value="cat">Cat</option>
+          <option value="fish">Fish</option>
         </select>
         <select
           value={sortBy}
@@ -448,7 +448,7 @@ export default function ProductsPage() {
                 {product.isFeatured && (
                   <span style={{
                     position: 'absolute', top: 12, left: 12,
-                  }} className="fp-badge fp-badge-amber">⭐ Featured</span>
+                  }} className="fp-badge fp-badge-amber">Featured</span>
                 )}
                 <span className={`fp-badge fp-badge-${product.isActive ? 'success' : 'error'}`} style={{
                   position: 'absolute', top: 12, right: 12,

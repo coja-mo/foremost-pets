@@ -4,7 +4,11 @@ import React, { useState, useEffect } from 'react';
 import AppShell from '@/components/AppShell';
 import { useForemostStore } from '@/lib/store';
 import { LOYALTY_CONFIG } from '@/lib/store-config';
-import { Heart, Star, Users, TrendingUp, Gift, Crown, ArrowUpRight, PawPrint } from 'lucide-react';
+import { Heart, Star, Users, TrendingUp, Gift, Crown, ArrowUpRight, PawPrint, Dog, Cat, Fish, Medal, Gem } from 'lucide-react';
+
+const TIER_ICON_MAP: Record<string, React.ElementType> = {
+  paw: PawPrint, silver: Medal, gold: Crown, diamond: Gem,
+};
 
 export default function LoyaltyPage() {
   const { customers, loyaltyTransactions } = useForemostStore();
@@ -106,7 +110,9 @@ export default function LoyaltyPage() {
               background: `linear-gradient(135deg, ${tier.color}15, ${tier.color}05)`,
               borderBottom: `3px solid ${tier.color}`,
             }}>
-              <div style={{ fontSize: 40, marginBottom: 8 }}>{tier.icon}</div>
+              <div style={{ marginBottom: 8 }}>
+                {React.createElement(TIER_ICON_MAP[tier.icon] || PawPrint, { size: 36, color: tier.color })}
+              </div>
               <div style={{ fontSize: 18, fontWeight: 800, fontFamily: 'var(--font-heading)' }}>
                 {tier.name}
               </div>
@@ -182,7 +188,7 @@ export default function LoyaltyPage() {
                 <tr key={customer.id} className="animate-fade-in" style={{ animationDelay: `${i * 30}ms` }}>
                   <td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <span style={{ fontSize: 20 }}>{tierConfig?.icon}</span>
+                      {React.createElement(TIER_ICON_MAP[tierConfig?.icon || 'paw'] || PawPrint, { size: 18, color: tierConfig?.color })}
                       <div>
                         <div style={{ fontWeight: 600, fontSize: 14 }}>
                           {customer.firstName} {customer.lastName}
@@ -204,7 +210,7 @@ export default function LoyaltyPage() {
                   <td>
                     {customer.pets.map(p => (
                       <span key={p.id} title={p.name} style={{ fontSize: 16, marginRight: 4 }}>
-                        {p.type === 'dog' ? '🐕' : p.type === 'cat' ? '🐈' : '🐠'}
+                        {p.type === 'dog' ? <Dog size={14} /> : p.type === 'cat' ? <Cat size={14} /> : <Fish size={14} />}
                       </span>
                     ))}
                   </td>

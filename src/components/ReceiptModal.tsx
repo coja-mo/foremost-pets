@@ -162,7 +162,7 @@ export default function ReceiptModal({ order, onClose, onNewSale }: ReceiptModal
             borderTop: '1px solid var(--fp-gray-100)',
             fontSize: 11, color: 'var(--fp-gray-300)',
           }}>
-            <p>Thank you for shopping with Foremost Pets! 🐾</p>
+            <p style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>Thank you for shopping with Foremost Pets! <PawPrint size={12} /></p>
             <p>www.foremostpetfoods.ca</p>
           </div>
         </div>

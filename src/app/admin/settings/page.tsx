@@ -151,7 +151,7 @@ export default function SettingsPage() {
                       <div style={{ display: 'flex', gap: 4 }}>
                         {loc.petTypes.map(p => (
                           <span key={p} style={{ fontSize: 20 }}>
-                            {p === 'dog' ? '🐕' : p === 'cat' ? '🐈' : '🐠'}
+                            {p === 'dog' ? 'Dog' : p === 'cat' ? 'Cat' : 'Fish'}
                           </span>
                         ))}
                       </div>

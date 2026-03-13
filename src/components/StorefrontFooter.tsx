@@ -132,7 +132,7 @@ export default function StorefrontFooter() {
           fontSize: 12, color: 'rgba(255,255,255,0.4)',
         }}>
           <span>© {new Date().getFullYear()} Foremost Pets. All rights reserved.</span>
-          <span>Proudly serving Sault Ste. Marie since day one 🐾</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>Proudly serving Sault Ste. Marie since day one <PawPrint size={14} /></span>
         </div>
       </div>
     </footer>

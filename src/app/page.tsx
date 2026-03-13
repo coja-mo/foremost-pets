@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useForemostStore } from '@/lib/store';
 import { BRANDS, LOYALTY_CONFIG, STORE_LOCATIONS } from '@/lib/store-config';
@@ -9,7 +9,45 @@ import StorefrontFooter from '@/components/StorefrontFooter';
 import {
   ArrowRight, Star, Truck, Shield, Heart, MapPin, Phone, Clock,
   PawPrint, Dog, Cat, Fish, Package, Award, Sparkles, ChevronRight,
+  Zap, Crown, Gem, Medal, Leaf, ShieldCheck, Repeat, Send,
 } from 'lucide-react';
+
+// Intersection observer hook for scroll animations
+function useScrollReveal() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { el.classList.add('visible'); obs.unobserve(el); } },
+      { threshold: 0.1 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return ref;
+}
+
+function Section({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  const ref = useScrollReveal();
+  return <div ref={ref} className={`sf-section ${className}`}>{children}</div>;
+}
+
+// Tier icon mapping (no emojis)
+const TIER_ICONS: Record<string, React.ElementType> = {
+  paw: PawPrint,
+  'silver-paw': Medal,
+  'gold-paw': Crown,
+  'diamond-paw': Gem,
+};
+
+// Pet type icon/gradient mapping (no emojis)
+const PET_ICON: Record<string, React.ElementType> = { dog: Dog, cat: Cat, fish: Fish };
+const PET_GRADIENT: Record<string, string> = {
+  dog: 'linear-gradient(135deg, #fef3c7 0%, #fff7ed 100%)',
+  cat: 'linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%)',
+  fish: 'linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%)',
+};
 
 export default function HomePage() {
   const { products, customers } = useForemostStore();
@@ -20,23 +58,23 @@ export default function HomePage() {
     <div style={{ minHeight: '100vh', background: 'var(--fp-bg)' }}>
       <StorefrontHeader />
 
-      {/* Hero Section */}
+      {/* ===== HERO ===== */}
       <section style={{
         position: 'relative', overflow: 'hidden',
         background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)',
         padding: '100px 24px 120px',
       }}>
-        {/* Animated paw prints */}
+        {/* Decorative paw prints (SVG, not emoji) */}
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
-          {[...Array(8)].map((_, i) => (
-            <div key={i} style={{
+          {[...Array(6)].map((_, i) => (
+            <PawPrint key={i} size={30 + i * 8} style={{
               position: 'absolute',
-              top: `${10 + (i * 12) % 80}%`,
-              left: `${5 + (i * 17) % 90}%`,
-              fontSize: 30 + i * 6,
-              opacity: 0.03 + i * 0.003,
+              top: `${10 + (i * 15) % 80}%`,
+              left: `${5 + (i * 18) % 90}%`,
+              opacity: 0.03 + i * 0.004,
               transform: `rotate(${-40 + i * 25}deg)`,
-            }}>🐾</div>
+              color: 'white',
+            }} />
           ))}
           <div style={{
             position: 'absolute', top: '-30%', right: '-10%',
@@ -45,7 +83,7 @@ export default function HomePage() {
           }} />
         </div>
 
-        <div style={{
+        <div className="sf-hero-grid" style={{
           maxWidth: 1280, margin: '0 auto', position: 'relative', zIndex: 1,
           display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 60, alignItems: 'center',
         }}>
@@ -66,10 +104,7 @@ export default function HomePage() {
               marginBottom: 20,
             }}>
               Premium Nutrition for Your{' '}
-              <span style={{
-                background: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
-                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-              }}>Best Friend</span>
+              <span className="fp-gradient-text">Best Friend</span>
             </h1>
 
             <p style={{
@@ -81,34 +116,17 @@ export default function HomePage() {
             </p>
 
             <div style={{ display: 'flex', gap: 14 }}>
-              <Link href="/shop" style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                padding: '16px 32px', borderRadius: 'var(--radius-full)',
-                background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                color: 'white', fontWeight: 700, fontSize: 15,
-                textDecoration: 'none',
-                boxShadow: '0 4px 20px rgba(245, 158, 11, 0.4)',
-                transition: 'all 0.2s ease',
-              }}>
+              <Link href="/shop" className="sf-cta-primary">
                 Browse Products <ArrowRight size={18} />
               </Link>
-              <Link href="/our-stores" style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                padding: '16px 32px', borderRadius: 'var(--radius-full)',
-                border: '1px solid rgba(255,255,255,0.2)',
-                color: 'white', fontWeight: 600, fontSize: 15,
-                textDecoration: 'none',
-                transition: 'all 0.2s ease',
-              }}>
+              <Link href="/our-stores" className="sf-cta-secondary">
                 Visit Our Stores
               </Link>
             </div>
           </div>
 
           {/* Hero stats */}
-          <div style={{
-            display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20,
-          }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
             {[
               { icon: Package, value: `${totalProducts}+`, label: 'Premium Products', color: '#f59e0b' },
               { icon: Award, value: `${BRANDS.length}+`, label: 'Trusted Brands', color: '#3b82f6' },
@@ -136,7 +154,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Trust Strip */}
+      {/* ===== TRUST STRIP ===== */}
       <section style={{
         background: 'white', borderBottom: '1px solid var(--fp-gray-100)',
         padding: '24px 0',
@@ -148,8 +166,8 @@ export default function HomePage() {
         }}>
           {[
             { icon: Star, text: 'Expert Nutrition Advice' },
-            { icon: Shield, text: 'Premium Quality Only' },
-            { icon: Truck, text: 'AutoShip & Save' },
+            { icon: ShieldCheck, text: 'Premium Quality Only' },
+            { icon: Repeat, text: 'AutoShip & Save' },
             { icon: Heart, text: 'Loyalty Rewards Program' },
           ].map((item, i) => (
             <div key={i} style={{
@@ -163,317 +181,323 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Products */}
-      <section style={{ padding: '80px 24px' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              fontSize: 13, fontWeight: 700, color: 'var(--fp-amber-dark)',
-              textTransform: 'uppercase', letterSpacing: '0.1em',
-              marginBottom: 8,
-            }}>
-              <Sparkles size={14} /> Featured Collection
-            </span>
-            <h2 style={{
-              fontFamily: 'var(--font-heading)', fontSize: 36, fontWeight: 800,
-              color: 'var(--fp-navy)', letterSpacing: '-0.02em',
-            }}>
-              Best Sellers & Staff Picks
-            </h2>
-            <p style={{ color: 'var(--fp-gray-400)', marginTop: 8, fontSize: 15 }}>
-              Handpicked by our team for quality, nutrition, and tail-wagging approval
-            </p>
-          </div>
-
-          <div style={{
-            display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24,
-          }}>
-            {featuredProducts.map(product => (
-              <Link key={product.id} href={`/shop/${product.id}`} style={{
-                textDecoration: 'none', color: 'inherit',
+      {/* ===== FEATURED PRODUCTS ===== */}
+      <Section>
+        <section style={{ padding: '80px 24px' }}>
+          <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: 48 }}>
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                fontSize: 13, fontWeight: 700, color: 'var(--fp-amber-dark)',
+                textTransform: 'uppercase', letterSpacing: '0.1em',
+                marginBottom: 8,
               }}>
-                <div style={{
-                  background: 'white', borderRadius: 'var(--radius-lg)',
-                  border: '1px solid var(--fp-gray-100)',
-                  overflow: 'hidden',
-                  transition: 'all 0.3s ease',
-                  cursor: 'pointer',
-                }}>
-                  {/* Product image placeholder */}
-                  <div style={{
-                    height: 200,
-                    background: `linear-gradient(135deg, ${product.petType.includes('dog') ? '#fef3c7' : product.petType.includes('cat') ? '#dbeafe' : '#d1fae5'}, white)`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    position: 'relative',
+                <Sparkles size={14} /> Featured Collection
+              </span>
+              <h2 style={{
+                fontFamily: 'var(--font-heading)', fontSize: 36, fontWeight: 800,
+                color: 'var(--fp-navy)', letterSpacing: '-0.02em',
+              }}>
+                Best Sellers & Staff Picks
+              </h2>
+              <p style={{ color: 'var(--fp-gray-400)', marginTop: 8, fontSize: 15 }}>
+                Handpicked by our team for quality, nutrition, and tail-wagging approval
+              </p>
+            </div>
+
+            <div className="sf-product-grid-4" style={{
+              display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24,
+            }}>
+              {featuredProducts.map(product => {
+                const primaryPet = product.petType[0] || 'dog';
+                const PetIcon = PET_ICON[primaryPet] || Dog;
+                return (
+                  <Link key={product.id} href={`/shop/${product.id}`} style={{
+                    textDecoration: 'none', color: 'inherit',
                   }}>
-                    <div style={{ fontSize: 64, opacity: 0.3 }}>
-                      {product.petType.includes('dog') ? '🐕' : product.petType.includes('cat') ? '🐈' : '🐠'}
+                    <div className="sf-product-card">
+                      <div className="sf-product-image" style={{
+                        height: 200,
+                        background: PET_GRADIENT[primaryPet] || PET_GRADIENT.dog,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        position: 'relative',
+                      }}>
+                        <PetIcon size={56} strokeWidth={1} style={{ opacity: 0.2, color: 'var(--fp-navy)' }} />
+                        {product.isFeatured && (
+                          <div style={{
+                            position: 'absolute', top: 12, left: 12,
+                            background: 'var(--fp-amber)', color: 'white',
+                            fontSize: 10, fontWeight: 700, padding: '4px 10px',
+                            borderRadius: 'var(--radius-full)',
+                            textTransform: 'uppercase', letterSpacing: '0.05em',
+                            display: 'flex', alignItems: 'center', gap: 4,
+                          }}>
+                            <Star size={10} /> Staff Pick
+                          </div>
+                        )}
+                      </div>
+                      <div style={{ padding: '16px 18px 20px' }}>
+                        <div style={{
+                          fontSize: 11, fontWeight: 600, color: 'var(--fp-amber-dark)',
+                          textTransform: 'uppercase', letterSpacing: '0.05em',
+                          marginBottom: 6,
+                        }}>
+                          {product.brand}
+                        </div>
+                        <h3 style={{
+                          fontSize: 14, fontWeight: 700, color: 'var(--fp-navy)',
+                          marginBottom: 8, lineHeight: 1.3,
+                          display: '-webkit-box', WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                        }}>
+                          {product.name}
+                        </h3>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                          <span style={{
+                            fontSize: 20, fontWeight: 800, color: 'var(--fp-navy)',
+                            fontFamily: 'var(--font-heading)',
+                          }}>
+                            ${product.price.toFixed(2)}
+                          </span>
+                          {product.weight && (
+                            <span style={{ fontSize: 12, color: 'var(--fp-gray-400)' }}>
+                              / {product.weight}
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                    {product.isFeatured && (
-                      <div style={{
-                        position: 'absolute', top: 12, left: 12,
-                        background: 'var(--fp-amber)', color: 'white',
-                        fontSize: 10, fontWeight: 700, padding: '4px 10px',
-                        borderRadius: 'var(--radius-full)',
-                        textTransform: 'uppercase', letterSpacing: '0.05em',
-                      }}>Staff Pick</div>
-                    )}
-                  </div>
-                  <div style={{ padding: '16px 18px 20px' }}>
+                  </Link>
+                );
+              })}
+            </div>
+
+            <div style={{ textAlign: 'center', marginTop: 40 }}>
+              <Link href="/shop" style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                padding: '14px 32px', borderRadius: 'var(--radius-full)',
+                border: '2px solid var(--fp-navy)',
+                color: 'var(--fp-navy)', fontWeight: 700, fontSize: 14,
+                textDecoration: 'none', transition: 'all 0.2s ease',
+              }}>
+                View All Products <ChevronRight size={18} />
+              </Link>
+            </div>
+          </div>
+        </section>
+      </Section>
+
+      {/* ===== BRANDS ===== */}
+      <Section>
+        <section style={{
+          padding: '64px 24px',
+          background: 'white', borderTop: '1px solid var(--fp-gray-100)',
+          borderBottom: '1px solid var(--fp-gray-100)',
+        }}>
+          <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
+            <h2 style={{
+              fontFamily: 'var(--font-heading)', fontSize: 24, fontWeight: 800,
+              color: 'var(--fp-navy)', marginBottom: 8,
+            }}>Brands We Trust</h2>
+            <p style={{ color: 'var(--fp-gray-400)', fontSize: 14, marginBottom: 40 }}>
+              We carry only the highest quality brands for your pets
+            </p>
+            <div style={{
+              display: 'flex', justifyContent: 'center', gap: 40,
+              flexWrap: 'wrap', alignItems: 'center',
+            }}>
+              {BRANDS.filter(b => b.featured).map(brand => (
+                <div key={brand.id} style={{
+                  padding: '16px 28px', borderRadius: 'var(--radius-md)',
+                  border: '1px solid var(--fp-gray-100)',
+                  fontFamily: 'var(--font-heading)', fontSize: 18, fontWeight: 800,
+                  color: 'var(--fp-gray-300)',
+                  transition: 'all 0.2s ease',
+                }}>
+                  {brand.name}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </Section>
+
+      {/* ===== LOYALTY ===== */}
+      <Section>
+        <section style={{ padding: '80px 24px' }}>
+          <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: 48 }}>
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                fontSize: 13, fontWeight: 700, color: 'var(--fp-amber-dark)',
+                textTransform: 'uppercase', letterSpacing: '0.1em',
+                marginBottom: 8,
+              }}>
+                <Heart size={14} /> Paw Rewards
+              </span>
+              <h2 style={{
+                fontFamily: 'var(--font-heading)', fontSize: 36, fontWeight: 800,
+                color: 'var(--fp-navy)', letterSpacing: '-0.02em',
+              }}>Loyalty That Pays Off</h2>
+              <p style={{ color: 'var(--fp-gray-400)', marginTop: 8, fontSize: 15 }}>
+                Earn points on every purchase and unlock exclusive rewards
+              </p>
+            </div>
+
+            <div className="sf-tier-grid" style={{
+              display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20,
+            }}>
+              {LOYALTY_CONFIG.tiers.map((tier) => {
+                const TierIcon = TIER_ICONS[tier.tier] || PawPrint;
+                return (
+                  <div key={tier.tier} style={{
+                    background: 'white', borderRadius: 'var(--radius-lg)',
+                    border: '1px solid var(--fp-gray-100)',
+                    padding: '28px 24px', textAlign: 'center',
+                    position: 'relative', overflow: 'hidden',
+                    transition: 'all 0.3s ease',
+                  }}>
                     <div style={{
-                      fontSize: 11, fontWeight: 600, color: 'var(--fp-amber-dark)',
-                      textTransform: 'uppercase', letterSpacing: '0.05em',
-                      marginBottom: 6,
+                      position: 'absolute', top: 0, left: 0, right: 0, height: 4,
+                      background: tier.color,
+                    }} />
+                    <div className="fp-tier-icon" style={{
+                      width: 56, height: 56, borderRadius: '50%',
+                      background: `${tier.color}18`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      margin: '0 auto 12px',
                     }}>
-                      {product.brand}
+                      <TierIcon size={26} color={tier.color} />
                     </div>
                     <h3 style={{
-                      fontSize: 14, fontWeight: 700, color: 'var(--fp-navy)',
-                      marginBottom: 8, lineHeight: 1.3,
-                      display: '-webkit-box', WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical', overflow: 'hidden',
-                    }}>
-                      {product.name}
-                    </h3>
+                      fontFamily: 'var(--font-heading)', fontSize: 18, fontWeight: 800,
+                      color: 'var(--fp-navy)', marginBottom: 4,
+                    }}>{tier.name}</h3>
                     <div style={{
-                      display: 'flex', alignItems: 'baseline', gap: 8,
+                      fontSize: 24, fontWeight: 900, color: tier.color,
+                      fontFamily: 'var(--font-heading)', marginBottom: 16,
                     }}>
-                      <span style={{
-                        fontSize: 20, fontWeight: 800, color: 'var(--fp-navy)',
-                        fontFamily: 'var(--font-heading)',
-                      }}>
-                        ${product.price.toFixed(2)}
-                      </span>
-                      {product.weight && (
-                        <span style={{ fontSize: 12, color: 'var(--fp-gray-400)' }}>
-                          / {product.weight}
-                        </span>
-                      )}
+                      {tier.pointsMultiplier}x Points
+                    </div>
+                    <div style={{ fontSize: 13, color: 'var(--fp-gray-400)' }}>
+                      {tier.discountPercent > 0 ? `${tier.discountPercent}% off all purchases` : 'No minimum spend'}
+                    </div>
+                    <div style={{
+                      marginTop: 16, paddingTop: 16,
+                      borderTop: '1px solid var(--fp-gray-100)',
+                      fontSize: 12, color: 'var(--fp-gray-400)',
+                    }}>
+                      {tier.minSpend > 0 ? `Spend $${tier.minSpend}+ to qualify` : 'Free to join — sign up today!'}
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          <div style={{ textAlign: 'center', marginTop: 40 }}>
-            <Link href="/shop" style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              padding: '14px 32px', borderRadius: 'var(--radius-full)',
-              border: '2px solid var(--fp-navy)',
-              color: 'var(--fp-navy)', fontWeight: 700, fontSize: 14,
-              textDecoration: 'none', transition: 'all 0.2s ease',
-            }}>
-              View All Products <ChevronRight size={18} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Brands Section */}
-      <section style={{
-        padding: '64px 24px',
-        background: 'white', borderTop: '1px solid var(--fp-gray-100)',
-        borderBottom: '1px solid var(--fp-gray-100)',
-      }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{
-            fontFamily: 'var(--font-heading)', fontSize: 24, fontWeight: 800,
-            color: 'var(--fp-navy)', marginBottom: 8,
-          }}>
-            Brands We Trust
-          </h2>
-          <p style={{ color: 'var(--fp-gray-400)', fontSize: 14, marginBottom: 40 }}>
-            We carry only the highest quality brands for your pets
-          </p>
-          <div style={{
-            display: 'flex', justifyContent: 'center', gap: 40,
-            flexWrap: 'wrap', alignItems: 'center',
-          }}>
-            {BRANDS.filter(b => b.featured).map(brand => (
-              <div key={brand.id} style={{
-                padding: '16px 28px',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--fp-gray-100)',
-                fontFamily: 'var(--font-heading)',
-                fontSize: 18, fontWeight: 800,
-                color: 'var(--fp-gray-300)',
-                transition: 'all 0.2s ease',
-              }}>
-                {brand.name}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Loyalty Section */}
-      <section style={{ padding: '80px 24px' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              fontSize: 13, fontWeight: 700, color: 'var(--fp-amber-dark)',
-              textTransform: 'uppercase', letterSpacing: '0.1em',
-              marginBottom: 8,
-            }}>
-              <Heart size={14} /> Paw Rewards
-            </span>
-            <h2 style={{
-              fontFamily: 'var(--font-heading)', fontSize: 36, fontWeight: 800,
-              color: 'var(--fp-navy)', letterSpacing: '-0.02em',
-            }}>
-              Loyalty That Pays Off
-            </h2>
-            <p style={{ color: 'var(--fp-gray-400)', marginTop: 8, fontSize: 15 }}>
-              Earn points on every purchase and unlock exclusive rewards
-            </p>
-          </div>
-
-          <div style={{
-            display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20,
-          }}>
-            {LOYALTY_CONFIG.tiers.map((tier, i) => (
-              <div key={tier.tier} style={{
-                background: 'white', borderRadius: 'var(--radius-lg)',
-                border: '1px solid var(--fp-gray-100)',
-                padding: '28px 24px',
-                textAlign: 'center',
-                position: 'relative', overflow: 'hidden',
-                transition: 'all 0.3s ease',
-              }}>
-                <div style={{
-                  position: 'absolute', top: 0, left: 0, right: 0, height: 4,
-                  background: tier.color,
-                }} />
-                <span style={{ fontSize: 36 }}>{tier.icon}</span>
-                <h3 style={{
-                  fontFamily: 'var(--font-heading)', fontSize: 18, fontWeight: 800,
-                  color: 'var(--fp-navy)', marginTop: 12, marginBottom: 4,
-                }}>
-                  {tier.name}
-                </h3>
-                <div style={{
-                  fontSize: 24, fontWeight: 900, color: tier.color,
-                  fontFamily: 'var(--font-heading)',
-                  marginBottom: 16,
-                }}>
-                  {tier.pointsMultiplier}x Points
-                </div>
-                <div style={{ fontSize: 13, color: 'var(--fp-gray-400)' }}>
-                  {tier.discountPercent > 0 ? `${tier.discountPercent}% off all purchases` : 'No minimum spend'}
-                </div>
-                <div style={{
-                  marginTop: 16, paddingTop: 16,
-                  borderTop: '1px solid var(--fp-gray-100)',
-                  fontSize: 12, color: 'var(--fp-gray-400)',
-                }}>
-                  {tier.minSpend > 0 ? `Spend $${tier.minSpend}+ to qualify` : 'Free to join — sign up today!'}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Store Locations CTA */}
-      <section style={{
-        padding: '80px 24px',
-        background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
-      }}>
-        <div style={{
-          maxWidth: 1280, margin: '0 auto',
-          display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40,
-        }}>
-          {STORE_LOCATIONS.map(location => (
-            <div key={location.id} style={{
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: 'var(--radius-lg)', padding: '36px 32px',
-            }}>
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 8,
-                marginBottom: 20,
-              }}>
-                <MapPin size={20} color="#f59e0b" />
-                <h3 style={{
-                  fontFamily: 'var(--font-heading)', fontSize: 20, fontWeight: 800,
-                  color: 'white',
-                }}>{location.name}</h3>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: 'rgba(255,255,255,0.6)' }}>
-                  <MapPin size={14} style={{ flexShrink: 0 }} />
-                  {location.address.street}, {location.address.city}, {location.address.province}
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: 'rgba(255,255,255,0.6)' }}>
-                  <Phone size={14} style={{ flexShrink: 0 }} />
-                  {location.phone}
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: 'rgba(255,255,255,0.6)' }}>
-                  <Clock size={14} style={{ flexShrink: 0 }} />
-                  Mon–Sat: 9am–6pm • Sun: 11am–4pm
-                </div>
-              </div>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {location.features.map(feature => (
-                  <span key={feature} style={{
-                    padding: '6px 14px', borderRadius: 'var(--radius-full)',
-                    background: 'rgba(245,158,11,0.12)', color: '#f59e0b',
-                    fontSize: 12, fontWeight: 600,
-                  }}>
-                    {feature}
-                  </span>
-                ))}
-              </div>
-              <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
-                {location.petTypes.map(pet => (
-                  <div key={pet} style={{
-                    display: 'flex', alignItems: 'center', gap: 4,
-                    fontSize: 12, color: 'rgba(255,255,255,0.5)',
-                    textTransform: 'capitalize',
-                  }}>
-                    {pet === 'dog' ? <Dog size={14} /> : pet === 'cat' ? <Cat size={14} /> : <Fish size={14} />}
-                    {pet}
-                  </div>
-                ))}
-              </div>
+                );
+              })}
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Newsletter CTA */}
-      <section style={{ padding: '64px 24px', background: 'white' }}>
-        <div style={{
-          maxWidth: 600, margin: '0 auto', textAlign: 'center',
-        }}>
-          <h2 style={{
-            fontFamily: 'var(--font-heading)', fontSize: 28, fontWeight: 800,
-            color: 'var(--fp-navy)', marginBottom: 8,
-          }}>
-            Stay Connected 🐾
-          </h2>
-          <p style={{ color: 'var(--fp-gray-400)', fontSize: 14, marginBottom: 24 }}>
-            Get exclusive deals, new product alerts, and pet care tips delivered to your inbox
-          </p>
-          <div style={{ display: 'flex', gap: 12, maxWidth: 460, margin: '0 auto' }}>
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="fp-input"
-              style={{ flex: 1, height: 48 }}
-            />
-            <button className="fp-button fp-button-primary" style={{
-              height: 48, padding: '0 28px', borderRadius: 'var(--radius-full)',
-              fontWeight: 700, whiteSpace: 'nowrap',
-            }}>
-              Subscribe
-            </button>
           </div>
-        </div>
-      </section>
+        </section>
+      </Section>
+
+      {/* ===== LOCATIONS ===== */}
+      <Section>
+        <section style={{
+          padding: '80px 24px',
+          background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
+        }}>
+          <div className="sf-store-grid" style={{
+            maxWidth: 1280, margin: '0 auto',
+            display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40,
+          }}>
+            {STORE_LOCATIONS.map(location => (
+              <div key={location.id} style={{
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: 'var(--radius-lg)', padding: '36px 32px',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
+                  <MapPin size={20} color="#f59e0b" />
+                  <h3 style={{
+                    fontFamily: 'var(--font-heading)', fontSize: 20, fontWeight: 800, color: 'white',
+                  }}>{location.name}</h3>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: 'rgba(255,255,255,0.6)' }}>
+                    <MapPin size={14} style={{ flexShrink: 0 }} />
+                    {location.address.street}, {location.address.city}, {location.address.province}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: 'rgba(255,255,255,0.6)' }}>
+                    <Phone size={14} style={{ flexShrink: 0 }} />
+                    {location.phone}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: 'rgba(255,255,255,0.6)' }}>
+                    <Clock size={14} style={{ flexShrink: 0 }} />
+                    Mon–Sat: 9am–6pm / Sun: 11am–4pm
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
+                  {location.features.map(feature => (
+                    <span key={feature} style={{
+                      padding: '6px 14px', borderRadius: 'var(--radius-full)',
+                      background: 'rgba(245,158,11,0.12)', color: '#f59e0b',
+                      fontSize: 12, fontWeight: 600,
+                    }}>{feature}</span>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', gap: 12 }}>
+                  {location.petTypes.map(pet => {
+                    const PIcon = PET_ICON[pet] || Dog;
+                    return (
+                      <div key={pet} style={{
+                        display: 'flex', alignItems: 'center', gap: 4,
+                        fontSize: 12, color: 'rgba(255,255,255,0.5)', textTransform: 'capitalize',
+                      }}>
+                        <PIcon size={14} /> {pet}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </Section>
+
+      {/* ===== NEWSLETTER ===== */}
+      <Section>
+        <section style={{ padding: '64px 24px', background: 'white' }}>
+          <div style={{ maxWidth: 600, margin: '0 auto', textAlign: 'center' }}>
+            <div style={{
+              width: 56, height: 56, borderRadius: '50%',
+              background: 'var(--fp-amber-glow)', display: 'flex',
+              alignItems: 'center', justifyContent: 'center',
+              margin: '0 auto 16px',
+            }}>
+              <Send size={24} color="var(--fp-amber-dark)" />
+            </div>
+            <h2 style={{
+              fontFamily: 'var(--font-heading)', fontSize: 28, fontWeight: 800,
+              color: 'var(--fp-navy)', marginBottom: 8,
+            }}>Stay Connected</h2>
+            <p style={{ color: 'var(--fp-gray-400)', fontSize: 14, marginBottom: 24 }}>
+              Get exclusive deals, new product alerts, and pet care tips delivered to your inbox
+            </p>
+            <div style={{ display: 'flex', gap: 12, maxWidth: 460, margin: '0 auto' }}>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="fp-input"
+                style={{ flex: 1, height: 48 }}
+              />
+              <button className="fp-button fp-button-primary" style={{
+                height: 48, padding: '0 28px', borderRadius: 'var(--radius-full)',
+                fontWeight: 700, whiteSpace: 'nowrap',
+                background: 'var(--fp-navy)', color: 'white', border: 'none', cursor: 'pointer',
+              }}>
+                Subscribe
+              </button>
+            </div>
+          </div>
+        </section>
+      </Section>
 
       <StorefrontFooter />
     </div>

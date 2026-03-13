@@ -46,7 +46,7 @@ export default function ProductDetailPage() {
     p => p.id !== product.id && p.isActive && (p.category === product.category || p.brand === product.brand)
   ).slice(0, 4);
 
-  const petEmoji = product.petType.includes('dog') ? '🐕' : product.petType.includes('cat') ? '🐈' : '🐠';
+  const PetIcon = product.petType.includes('dog') ? Dog : product.petType.includes('cat') ? Cat : Fish;
   const petGradient = product.petType.includes('dog') ? '#fef3c7' : product.petType.includes('cat') ? '#dbeafe' : '#d1fae5';
 
   return (
@@ -79,7 +79,7 @@ export default function ProductDetailPage() {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           minHeight: 480, position: 'relative',
         }}>
-          <div style={{ fontSize: 120, opacity: 0.3 }}>{petEmoji}</div>
+          <div style={{ opacity: 0.2 }}><PetIcon size={96} strokeWidth={1} color="var(--fp-navy)" /></div>
           {product.isFeatured && (
             <div style={{
               position: 'absolute', top: 20, left: 20,
@@ -255,8 +255,8 @@ export default function ProductDetailPage() {
                       height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center',
                       background: `linear-gradient(135deg, ${rp.petType.includes('dog') ? '#fef3c7' : '#dbeafe'}, white)`,
                     }}>
-                      <div style={{ fontSize: 48, opacity: 0.3 }}>
-                        {rp.petType.includes('dog') ? '🐕' : '🐈'}
+                      <div style={{ opacity: 0.2 }}>
+                        {rp.petType.includes('dog') ? <Dog size={36} strokeWidth={1} color="var(--fp-navy)" /> : <Cat size={36} strokeWidth={1} color="var(--fp-navy)" />}
                       </div>
                     </div>
                     <div style={{ padding: '12px 14px 16px' }}>

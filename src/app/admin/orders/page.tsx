@@ -6,7 +6,7 @@ import { useForemostStore } from '@/lib/store';
 import toast from 'react-hot-toast';
 import {
   ShoppingBag, Search, Filter, Eye, RefreshCw, DollarSign,
-  Calendar, User, CreditCard, ArrowUpRight, X, Package,
+  Calendar, User, CreditCard, ArrowUpRight, X, Package, Star,
 } from 'lucide-react';
 
 export default function OrdersPage() {
@@ -220,7 +220,7 @@ export default function OrdersPage() {
                 </div>
                 {detail.loyaltyPointsEarned > 0 && (
                   <div style={{ marginTop: 8, fontSize: 13, color: 'var(--fp-amber-dark)', fontWeight: 600 }}>
-                    ⭐ {detail.loyaltyPointsEarned} loyalty points earned
+                    <Star size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} color="var(--fp-amber)" /> {detail.loyaltyPointsEarned} loyalty points earned
                   </div>
                 )}
               </div>

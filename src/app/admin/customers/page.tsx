@@ -10,6 +10,7 @@ import {
   Search, Plus, Edit3, Trash2, Users, User, Mail, Phone,
   MapPin, PawPrint, Star, Heart, Eye, X, Dog, Cat, Fish,
   ArrowUpRight, Calendar, CreditCard, Gift, Repeat,
+  Medal, Crown, Gem,
 } from 'lucide-react';
 
 // ---- Customer Detail Panel ----
@@ -47,9 +48,8 @@ function CustomerDetail({ customer, onClose }: { customer: Customer; onClose: ()
               width: 56, height: 56, borderRadius: 'var(--radius-lg)',
               background: `linear-gradient(135deg, ${tierColors[customer.loyaltyTier]}22, ${tierColors[customer.loyaltyTier]}55)`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 28,
             }}>
-              {tierConfig?.icon}
+              <PawPrint size={24} color={tierColors[customer.loyaltyTier]} />
             </div>
             <div>
               <h2 style={{ fontSize: 22, fontWeight: 800 }}>
@@ -150,7 +150,7 @@ function CustomerDetail({ customer, onClose }: { customer: Customer; onClose: ()
         {/* Pets */}
         <div style={{ padding: '0 28px 20px' }}>
           <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 12 }}>
-            🐾 Pets ({customer.pets.length})
+            <PawPrint size={14} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} /> Pets ({customer.pets.length})
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {customer.pets.map(pet => (
@@ -162,9 +162,9 @@ function CustomerDetail({ customer, onClose }: { customer: Customer; onClose: ()
                 <div style={{
                   width: 40, height: 40, borderRadius: 'var(--radius-md)',
                   background: 'var(--fp-amber-glow)', display: 'flex',
-                  alignItems: 'center', justifyContent: 'center', fontSize: 20,
+                  alignItems: 'center', justifyContent: 'center',
                 }}>
-                  {pet.type === 'dog' ? '🐕' : pet.type === 'cat' ? '🐈' : '🐠'}
+                  {pet.type === 'dog' ? <Dog size={18} color="var(--fp-amber-dark)" /> : pet.type === 'cat' ? <Cat size={18} color="var(--fp-amber-dark)" /> : <Fish size={18} color="var(--fp-amber-dark)" />}
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 600, fontSize: 14 }}>{pet.name}</div>
@@ -272,8 +272,8 @@ export default function CustomersPage() {
     return matchesTier && matchesSearch;
   }).sort((a, b) => b.totalSpent - a.totalSpent);
 
-  const tierIcons: Record<string, string> = {
-    'paw': '🐾', 'silver-paw': '🥈', 'gold-paw': '⭐', 'diamond-paw': '💎',
+  const tierIconMap: Record<string, React.ElementType> = {
+    'paw': PawPrint, 'silver-paw': Medal, 'gold-paw': Crown, 'diamond-paw': Gem,
   };
 
   const tierStats = LOYALTY_CONFIG.tiers.map(t => ({
@@ -310,7 +310,7 @@ export default function CustomersPage() {
               border: tierFilter === tier.tier ? `2px solid ${tier.color}` : '1px solid var(--fp-gray-100)',
             }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <span style={{ fontSize: 28 }}>{tier.icon}</span>
+              <span>{React.createElement(tierIconMap[tier.tier] || PawPrint, { size: 24, color: tier.color })}</span>
               <span style={{ fontSize: 28, fontWeight: 800, fontFamily: 'var(--font-heading)', color: tier.color }}>
                 {tier.count}
               </span>
@@ -356,9 +356,9 @@ export default function CustomersPage() {
                     <div style={{
                       width: 40, height: 40, borderRadius: 'var(--radius-md)',
                       background: 'var(--fp-gray-50)', display: 'flex',
-                      alignItems: 'center', justifyContent: 'center', fontSize: 18,
+                      alignItems: 'center', justifyContent: 'center',
                     }}>
-                      {tierIcons[customer.loyaltyTier]}
+                      {React.createElement(tierIconMap[customer.loyaltyTier] || PawPrint, { size: 18, color: 'var(--fp-gray-400)' })}
                     </div>
                     <div>
                       <div style={{ fontWeight: 600, fontSize: 14 }}>
@@ -378,8 +378,8 @@ export default function CustomersPage() {
                 <td>
                   <div style={{ display: 'flex', gap: 4 }}>
                     {customer.pets.map(pet => (
-                      <span key={pet.id} title={`${pet.name} (${pet.breed})`} style={{ fontSize: 16 }}>
-                        {pet.type === 'dog' ? '🐕' : pet.type === 'cat' ? '🐈' : '🐠'}
+                      <span key={pet.id} title={`${pet.name} (${pet.breed})`}>
+                        {pet.type === 'dog' ? <Dog size={16} color="var(--fp-amber-dark)" /> : pet.type === 'cat' ? <Cat size={16} color="var(--fp-amber-dark)" /> : <Fish size={16} color="var(--fp-amber-dark)" />}
                       </span>
                     ))}
                   </div>
@@ -465,7 +465,7 @@ function AddCustomerModal({ onClose }: { onClose: () => void }) {
       tags: [],
       isActive: true,
     });
-    toast.success(`Welcome ${form.firstName}! 🐾`);
+    toast.success(`Welcome ${form.firstName}!`);
     onClose();
   };
 
@@ -511,7 +511,7 @@ function AddCustomerModal({ onClose }: { onClose: () => void }) {
             padding: '16px 20px', borderRadius: 'var(--radius-md)',
             background: 'var(--fp-gray-50)', border: '1px solid var(--fp-gray-100)',
           }}>
-            <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 12 }}>🐾 Add a Pet (Optional)</div>
+            <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}><PawPrint size={14} /> Add a Pet (Optional)</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <div>
                 <label style={{ fontSize: 12, fontWeight: 500, display: 'block', marginBottom: 4 }}>Pet Name</label>
@@ -520,9 +520,9 @@ function AddCustomerModal({ onClose }: { onClose: () => void }) {
               <div>
                 <label style={{ fontSize: 12, fontWeight: 500, display: 'block', marginBottom: 4 }}>Type</label>
                 <select className="fp-input" value={form.petType} onChange={e => setForm({ ...form, petType: e.target.value as PetType })}>
-                  <option value="dog">🐕 Dog</option>
-                  <option value="cat">🐈 Cat</option>
-                  <option value="fish">🐠 Fish</option>
+                  <option value="dog">Dog</option>
+                  <option value="cat">Cat</option>
+                  <option value="fish">Fish</option>
                 </select>
               </div>
             </div>

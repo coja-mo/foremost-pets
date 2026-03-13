@@ -41,7 +41,7 @@ export default function PromotionsPage() {
       applicableCategories: [],
       maxUsage: undefined,
     });
-    toast.success('Promotion created! 🎉');
+    toast.success('Promotion created successfully');
     setShowCreate(false);
     setForm({ name: '', description: '', type: 'percentage', value: 10, code: '', startDate: '', endDate: '', minPurchase: 0, isActive: true });
   };

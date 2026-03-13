@@ -85,7 +85,7 @@ export const LOYALTY_CONFIG: LoyaltyConfig = {
     {
       tier: 'paw',
       name: 'Paw Member',
-      icon: '🐾',
+      icon: 'paw',
       color: '#78716c',
       minSpend: 0,
       pointsMultiplier: 1,
@@ -100,7 +100,7 @@ export const LOYALTY_CONFIG: LoyaltyConfig = {
     {
       tier: 'silver-paw',
       name: 'Silver Paw',
-      icon: '🥈',
+      icon: 'silver',
       color: '#94a3b8',
       minSpend: 500,
       pointsMultiplier: 1.5,
@@ -116,7 +116,7 @@ export const LOYALTY_CONFIG: LoyaltyConfig = {
     {
       tier: 'gold-paw',
       name: 'Gold Paw',
-      icon: '⭐',
+      icon: 'gold',
       color: '#eab308',
       minSpend: 1500,
       pointsMultiplier: 2,
@@ -133,7 +133,7 @@ export const LOYALTY_CONFIG: LoyaltyConfig = {
     {
       tier: 'diamond-paw',
       name: 'Diamond Paw',
-      icon: '💎',
+      icon: 'diamond',
       color: '#60a5fa',
       minSpend: 5000,
       pointsMultiplier: 3,

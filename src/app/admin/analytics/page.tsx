@@ -4,8 +4,10 @@ import React, { useState, useEffect } from 'react';
 import AppShell from '@/components/AppShell';
 import { useForemostStore } from '@/lib/store';
 import {
-  BarChart3, TrendingUp, Users, DollarSign, ShoppingCart,
-  Package, Star, PawPrint, ArrowUpRight, ArrowDownRight,
+  DollarSign, ShoppingCart, TrendingUp, TrendingDown,
+  PawPrint, Star, ArrowUpRight, Calendar, CreditCard,
+  Banknote, Gift, BarChart3, PieChart, Users,
+  Dog, Cat, Fish,
 } from 'lucide-react';
 
 // Simple chart bar component
@@ -271,7 +273,7 @@ export default function AnalyticsPage() {
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <span style={{ fontSize: 20 }}>
-                    {type === 'dog' ? '🐕' : type === 'cat' ? '🐈' : '🐠'}
+                    {type === 'dog' ? <Dog size={14} /> : type === 'cat' ? <Cat size={14} /> : <Fish size={14} />}
                   </span>
                   <span style={{ fontSize: 14, fontWeight: 500, textTransform: 'capitalize' }}>{type}s</span>
                 </div>
