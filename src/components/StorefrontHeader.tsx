@@ -26,6 +26,7 @@ export default function StorefrontHeader() {
     { href: '/loyalty', label: 'Paw Rewards' },
     { href: '/gift-cards', label: 'Gift Cards' },
     { href: '/about', label: 'About' },
+    { href: '/contact', label: 'Contact' },
   ];
 
   // Focus search input when opened

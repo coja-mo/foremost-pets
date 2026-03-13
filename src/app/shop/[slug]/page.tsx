@@ -289,6 +289,89 @@ export default function ProductDetailPage() {
         </div>
       </section>
 
+      {/* ===== Product Info Tabs ===== */}
+      <section style={{
+        maxWidth: 1280, margin: '0 auto', padding: '0 24px 64px',
+      }}>
+        <div style={{
+          background: 'white', borderRadius: 'var(--radius-xl)',
+          border: '1px solid var(--fp-gray-100)', overflow: 'hidden',
+        }}>
+          {/* Tab headers */}
+          <div style={{
+            display: 'flex', borderBottom: '2px solid var(--fp-gray-100)',
+          }}>
+            {['Description', 'Nutrition & Ingredients', 'Product Details'].map((tab, i) => (
+              <button
+                key={tab}
+                style={{
+                  flex: 1, padding: '16px 20px',
+                  fontSize: 14, fontWeight: 600,
+                  color: i === 0 ? 'var(--fp-amber-dark)' : 'var(--fp-gray-400)',
+                  borderBottom: i === 0 ? '2px solid var(--fp-amber)' : '2px solid transparent',
+                  background: i === 0 ? 'var(--fp-amber-glow)' : 'transparent',
+                  border: 'none', borderBottomWidth: 2, borderBottomStyle: 'solid',
+                  borderBottomColor: i === 0 ? 'var(--fp-amber)' : 'transparent',
+                  cursor: 'pointer', transition: 'all 0.2s ease',
+                  fontFamily: 'var(--font-heading)',
+                }}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab content */}
+          <div style={{ padding: '32px' }}>
+            <div style={{
+              display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48,
+            }}>
+              <div>
+                <h3 style={{
+                  fontFamily: 'var(--font-heading)', fontSize: 18, fontWeight: 800,
+                  color: 'var(--fp-navy)', marginBottom: 12,
+                }}>About This Product</h3>
+                <p style={{ fontSize: 14, color: 'var(--fp-gray-500)', lineHeight: 1.8 }}>
+                  {product.description}
+                </p>
+                <p style={{ fontSize: 14, color: 'var(--fp-gray-500)', lineHeight: 1.8, marginTop: 12 }}>
+                  Made with premium-quality ingredients and formulated to meet the
+                  nutritional needs of your {product.petType.join(' & ')}.
+                  {product.brand} products are crafted with care to ensure your pet
+                  gets the nutrition they deserve.
+                </p>
+              </div>
+              <div>
+                <h3 style={{
+                  fontFamily: 'var(--font-heading)', fontSize: 18, fontWeight: 800,
+                  color: 'var(--fp-navy)', marginBottom: 12,
+                }}>Key Details</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {[
+                    { label: 'Brand', value: product.brand },
+                    { label: 'Category', value: product.category.replace(/-/g, ' ') },
+                    { label: 'Weight / Size', value: product.weight || 'Standard' },
+                    { label: 'SKU', value: product.sku },
+                    { label: 'Pet Type', value: product.petType.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(', ') },
+                    { label: 'Stock Status', value: product.inventory.status.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) },
+                  ].map((row, i) => (
+                    <div key={i} style={{
+                      display: 'flex', justifyContent: 'space-between',
+                      padding: '10px 0',
+                      borderBottom: '1px solid var(--fp-gray-100)',
+                      fontSize: 14,
+                    }}>
+                      <span style={{ color: 'var(--fp-gray-400)', fontWeight: 500 }}>{row.label}</span>
+                      <span style={{ color: 'var(--fp-navy)', fontWeight: 600, textTransform: 'capitalize' }}>{row.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Related Products */}
       {relatedProducts.length > 0 && (
         <section style={{

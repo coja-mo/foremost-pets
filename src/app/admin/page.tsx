@@ -342,9 +342,84 @@ export default function DashboardPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: 24 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           <RecentOrders />
+
+          {/* Store Performance Summary */}
+          <div className="fp-card-flat" style={{ padding: 0, overflow: 'hidden' }}>
+            <div style={{
+              padding: '20px 24px', borderBottom: '1px solid var(--fp-gray-100)',
+              display: 'flex', alignItems: 'center', gap: 10,
+            }}>
+              <TrendingUp size={18} color="var(--fp-success)" />
+              <h3 style={{ fontSize: 16, fontWeight: 700 }}>Store Performance</h3>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
+              {[
+                { label: 'Orders Today', value: todaysSales.orders.toString(), icon: ShoppingCart, color: 'var(--fp-amber)' },
+                { label: 'Items Sold', value: orders.reduce((sum, o) => sum + o.items.length, 0).toString(), icon: Package, color: 'var(--fp-info)' },
+                { label: 'Avg. Basket', value: `$${todaysSales.avgOrder.toFixed(0)}`, icon: DollarSign, color: 'var(--fp-success)' },
+                { label: 'Loyalty Members', value: customers.filter(c => c.loyaltyTier !== 'paw').length.toString(), icon: Heart, color: '#8b5cf6' },
+              ].map((metric, i) => (
+                <div key={i} style={{
+                  padding: '20px 16px', textAlign: 'center',
+                  borderRight: i < 3 ? '1px solid var(--fp-gray-100)' : 'none',
+                }}>
+                  <metric.icon size={18} color={metric.color} style={{ marginBottom: 8 }} />
+                  <div style={{
+                    fontSize: 22, fontWeight: 800, fontFamily: 'var(--font-heading)',
+                    color: 'var(--fp-navy)',
+                  }}>{metric.value}</div>
+                  <div style={{ fontSize: 11, color: 'var(--fp-gray-400)', marginTop: 4 }}>{metric.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           <TopCustomers />
+
+          {/* Activity Feed */}
+          <div className="fp-card-flat" style={{ padding: 0, overflow: 'hidden' }}>
+            <div style={{
+              padding: '20px 24px', borderBottom: '1px solid var(--fp-gray-100)',
+              display: 'flex', alignItems: 'center', gap: 10,
+            }}>
+              <Repeat size={18} color="var(--fp-info)" />
+              <h3 style={{ fontSize: 16, fontWeight: 700 }}>Recent Activity</h3>
+            </div>
+            <div style={{ padding: '8px 0' }}>
+              {orders.slice(0, 6).map((order, i) => (
+                <div key={order.id} className="animate-fade-in" style={{
+                  padding: '12px 24px', display: 'flex', alignItems: 'center', gap: 12,
+                  borderBottom: i < 5 ? '1px solid var(--fp-gray-50)' : 'none',
+                  animationDelay: `${i * 40}ms`,
+                }}>
+                  <div style={{
+                    width: 32, height: 32, borderRadius: '50%',
+                    background: order.orderStatus === 'completed' ? 'var(--fp-success-light)' : 'var(--fp-warning-light)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                  }}>
+                    <ShoppingCart size={14} color={order.orderStatus === 'completed' ? 'var(--fp-success)' : 'var(--fp-warning)'} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{
+                      fontSize: 13, fontWeight: 600, color: 'var(--fp-navy)',
+                      overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis',
+                    }}>
+                      {order.orderNumber} — ${order.totalAmount.toFixed(2)}
+                    </div>
+                    <div style={{ fontSize: 11, color: 'var(--fp-gray-400)' }}>
+                      {order.items.length} item{order.items.length !== 1 ? 's' : ''} • {order.employeeName}
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 11, color: 'var(--fp-gray-300)', flexShrink: 0 }}>
+                    {new Date(order.createdAt).toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <LowStockAlerts />
         </div>
       </div>

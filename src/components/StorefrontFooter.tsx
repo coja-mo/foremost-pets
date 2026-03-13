@@ -64,6 +64,7 @@ export default function StorefrontFooter() {
               { href: '/loyalty', label: 'Paw Rewards' },
               { href: '/gift-cards', label: 'Gift Cards' },
               { href: '/about', label: 'About Us' },
+              { href: '/contact', label: 'Contact' },
             ].map(link => (
               <Link key={link.href} href={link.href} style={{
                 color: 'rgba(255,255,255,0.6)', textDecoration: 'none',
