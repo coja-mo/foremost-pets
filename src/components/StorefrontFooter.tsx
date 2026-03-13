@@ -147,10 +147,15 @@ export default function StorefrontFooter() {
               target="_blank"
               rel="noopener noreferrer"
               style={{
-                color: 'rgba(255,255,255,0.7)',
+                background: 'linear-gradient(90deg, #0066FF, #50C8FF, #eab308, #50C8FF, #0066FF)',
+                backgroundSize: '300% 100%',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
                 textDecoration: 'none',
-                fontWeight: 700,
-                transition: 'color 0.2s ease',
+                fontWeight: 800,
+                animation: 'asnGradient 4s ease infinite',
+                letterSpacing: '0.01em',
               }}
             >
               Antigravity Solutions North
