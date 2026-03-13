@@ -99,9 +99,15 @@ export default function ProductDetailPage() {
           borderRadius: 'var(--radius-xl)',
           border: '1px solid var(--fp-gray-100)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          minHeight: 480, position: 'relative',
+          minHeight: 480, position: 'relative', overflow: 'hidden',
         }}>
-          <div style={{ opacity: 0.2 }}><PetIcon size={96} strokeWidth={1} color="var(--fp-navy)" /></div>
+          {product.images?.[0] ? (
+            <img src={product.images[0]} alt={product.name} style={{
+              width: '100%', height: '100%', objectFit: 'cover',
+            }} />
+          ) : (
+            <div style={{ opacity: 0.2 }}><PetIcon size={96} strokeWidth={1} color="var(--fp-navy)" /></div>
+          )}
           {product.isFeatured && (
             <div style={{
               position: 'absolute', top: 20, left: 20,
@@ -413,10 +419,15 @@ export default function ProductDetailPage() {
                     <div style={{
                       height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center',
                       background: `linear-gradient(135deg, ${rp.petType.includes('dog') ? '#fef3c7' : '#dbeafe'}, white)`,
+                      overflow: 'hidden',
                     }}>
-                      <div style={{ opacity: 0.2 }}>
-                        {rp.petType.includes('dog') ? <Dog size={36} strokeWidth={1} color="var(--fp-navy)" /> : <Cat size={36} strokeWidth={1} color="var(--fp-navy)" />}
-                      </div>
+                      {rp.images?.[0] ? (
+                        <img src={rp.images[0]} alt={rp.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        <div style={{ opacity: 0.2 }}>
+                          {rp.petType.includes('dog') ? <Dog size={36} strokeWidth={1} color="var(--fp-navy)" /> : <Cat size={36} strokeWidth={1} color="var(--fp-navy)" />}
+                        </div>
+                      )}
                     </div>
                     <div style={{ padding: '12px 14px 16px' }}>
                       <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--fp-amber-dark)', marginBottom: 4 }}>{rp.brand}</div>
@@ -461,8 +472,13 @@ export default function ProductDetailPage() {
                     <div style={{
                       height: 110, display: 'flex', alignItems: 'center', justifyContent: 'center',
                       background: `linear-gradient(135deg, ${rp.petType.includes('dog') ? '#fef3c7' : rp.petType.includes('cat') ? '#dbeafe' : '#d1fae5'}, white)`,
+                      overflow: 'hidden',
                     }}>
-                      <PawPrint size={24} strokeWidth={1.5} color="var(--fp-gray-200)" />
+                      {rp.images?.[0] ? (
+                        <img src={rp.images[0]} alt={rp.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        <PawPrint size={24} strokeWidth={1.5} color="var(--fp-gray-200)" />
+                      )}
                     </div>
                     <div style={{ padding: '10px 12px' }}>
                       <div style={{ fontSize: 9, fontWeight: 600, color: 'var(--fp-amber-dark)', textTransform: 'uppercase', marginBottom: 2 }}>{rp.brand}</div>

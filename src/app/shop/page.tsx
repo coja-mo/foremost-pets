@@ -351,11 +351,17 @@ export default function ShopPage() {
                     minWidth: viewMode === 'list' ? 160 : undefined,
                     background: `linear-gradient(135deg, ${product.petType.includes('dog') ? '#fef3c7' : product.petType.includes('cat') ? '#dbeafe' : '#d1fae5'}, white)`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    position: 'relative',
+                    position: 'relative', overflow: 'hidden',
                   }}>
-                    <div style={{ opacity: 0.2 }}>
-                      {product.petType.includes('dog') ? <Dog size={viewMode === 'grid' ? 48 : 32} strokeWidth={1} color="var(--fp-navy)" /> : product.petType.includes('cat') ? <Cat size={viewMode === 'grid' ? 48 : 32} strokeWidth={1} color="var(--fp-navy)" /> : <Fish size={viewMode === 'grid' ? 48 : 32} strokeWidth={1} color="var(--fp-navy)" />}
-                    </div>
+                    {product.images?.[0] ? (
+                      <img src={product.images[0]} alt={product.name} style={{
+                        width: '100%', height: '100%', objectFit: 'cover',
+                      }} />
+                    ) : (
+                      <div style={{ opacity: 0.2 }}>
+                        {product.petType.includes('dog') ? <Dog size={viewMode === 'grid' ? 48 : 32} strokeWidth={1} color="var(--fp-navy)" /> : product.petType.includes('cat') ? <Cat size={viewMode === 'grid' ? 48 : 32} strokeWidth={1} color="var(--fp-navy)" /> : <Fish size={viewMode === 'grid' ? 48 : 32} strokeWidth={1} color="var(--fp-navy)" />}
+                      </div>
+                    )}
                     {product.isFeatured && (
                       <div style={{
                         position: 'absolute', top: 8, left: 8,
@@ -543,15 +549,21 @@ function BestSellersCarousel({ products, addItem }: { products: any[]; addItem: 
               overflow: 'hidden', textDecoration: 'none',
               transition: 'transform 0.2s ease, box-shadow 0.2s ease',
             }}>
-              {/* Image placeholder */}
+              {/* Product Image */}
               <div style={{
-                height: 140, position: 'relative',
+                height: 140, position: 'relative', overflow: 'hidden',
                 background: `linear-gradient(135deg, ${
                   product.petType.includes('dog') ? '#fef3c7' : product.petType.includes('cat') ? '#dbeafe' : '#d1fae5'
                 }, white)`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
-                <PawPrint size={28} strokeWidth={1.5} color="var(--fp-gray-200)" />
+                {product.images?.[0] ? (
+                  <img src={product.images[0]} alt={product.name} style={{
+                    width: '100%', height: '100%', objectFit: 'cover',
+                  }} />
+                ) : (
+                  <PawPrint size={28} strokeWidth={1.5} color="var(--fp-gray-200)" />
+                )}
                 <span style={{
                   position: 'absolute', top: 8, left: 8,
                   fontSize: 9, fontWeight: 700, padding: '3px 8px',
