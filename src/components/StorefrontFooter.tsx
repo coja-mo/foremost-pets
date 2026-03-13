@@ -135,8 +135,25 @@ export default function StorefrontFooter() {
           padding: '20px 0',
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           fontSize: 12, color: 'rgba(255,255,255,0.4)',
+          flexWrap: 'wrap', gap: 12,
         }}>
           <span>© {new Date().getFullYear()} Foremost Pets. All rights reserved.</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            Built with 💛 in SSM by{' '}
+            <a
+              href="https://antigravitysolutionsnorth.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: 'rgba(255,255,255,0.7)',
+                textDecoration: 'none',
+                fontWeight: 700,
+                transition: 'color 0.2s ease',
+              }}
+            >
+              Antigravity Solutions North
+            </a>
+          </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>Proudly serving Sault Ste. Marie since day one <PawPrint size={14} /></span>
         </div>
       </div>

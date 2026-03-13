@@ -220,17 +220,17 @@ export default function CartDrawer() {
             </div>
 
             <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <button style={{
+              <Link href="/checkout" onClick={closeCart} style={{
                 width: '100%', padding: '14px 24px',
                 borderRadius: 'var(--radius-md)',
                 background: 'linear-gradient(135deg, var(--fp-amber), var(--fp-amber-dark))',
                 color: 'white', border: 'none', cursor: 'pointer',
                 fontSize: 14, fontWeight: 700, fontFamily: 'var(--font-heading)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                transition: 'all 0.2s ease',
+                transition: 'all 0.2s ease', textDecoration: 'none',
               }}>
-                <ShoppingBag size={16} /> In-Store Pickup
-              </button>
+                <ShoppingBag size={16} /> Proceed to Checkout
+              </Link>
               <p style={{
                 fontSize: 11, color: 'var(--fp-gray-400)',
                 textAlign: 'center', lineHeight: 1.6,

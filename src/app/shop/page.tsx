@@ -42,6 +42,9 @@ export default function ShopPage() {
   const [brand, setBrand] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  const activeFilterCount = [category !== 'all' ? 1 : 0, petType !== 'all' ? 1 : 0, brand !== 'all' ? 1 : 0, search ? 1 : 0].reduce((a, b) => a + b, 0);
 
   const activeProducts = products.filter(p => p.isActive);
   const availableBrands = useMemo(() => {
@@ -93,25 +96,54 @@ export default function ShopPage() {
 
       <div style={{
         maxWidth: 1280, margin: '0 auto', padding: '32px 24px',
-        display: 'grid', gridTemplateColumns: '260px 1fr', gap: 32,
       }}>
-        {/* Sidebar Filters */}
-        <aside>
-          <div style={{
-            background: 'white', borderRadius: 'var(--radius-lg)',
-            border: '1px solid var(--fp-gray-100)',
-            padding: '24px 20px',
-            position: 'sticky', top: 100,
+        {/* Filter Toggle Bar */}
+        <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
+          <button onClick={() => setFiltersOpen(!filtersOpen)} style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '10px 20px', borderRadius: 'var(--radius-full)',
+            border: `1px solid ${filtersOpen ? 'var(--fp-amber)' : 'var(--fp-gray-200)'}`,
+            background: filtersOpen ? 'var(--fp-amber-glow)' : 'white',
+            cursor: 'pointer', fontSize: 13, fontWeight: 600,
+            color: filtersOpen ? 'var(--fp-amber-dark)' : 'var(--fp-navy)',
+            transition: 'all 0.2s ease',
           }}>
-            <h3 style={{
-              display: 'flex', alignItems: 'center', gap: 8,
-              fontSize: 15, fontWeight: 700, color: 'var(--fp-navy)', marginBottom: 20,
-            }}>
-              <SlidersHorizontal size={16} /> Filters
-            </h3>
+            <SlidersHorizontal size={14} /> Filters
+            {activeFilterCount > 0 && (
+              <span style={{
+                width: 18, height: 18, borderRadius: '50%',
+                background: 'var(--fp-amber)', color: 'white',
+                fontSize: 10, fontWeight: 800,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>{activeFilterCount}</span>
+            )}
+            <ChevronDown size={12} style={{
+              transition: 'transform 0.2s ease',
+              transform: filtersOpen ? 'rotate(180deg)' : 'rotate(0)',
+            }} />
+          </button>
+          {activeFilterCount > 0 && (
+            <button onClick={() => { setCategory('all'); setPetType('all'); setBrand('all'); setSearch(''); }} style={{
+              padding: '10px 16px', borderRadius: 'var(--radius-full)',
+              border: 'none', background: 'var(--fp-gray-50)',
+              cursor: 'pointer', fontSize: 12, fontWeight: 600,
+              color: 'var(--fp-gray-400)',
+            }}>Clear all filters</button>
+          )}
+        </div>
 
+        {/* Collapsible Filter Panel */}
+        {filtersOpen && (
+          <div style={{
+            background: 'white', borderRadius: 'var(--radius-xl)',
+            border: '1px solid var(--fp-gray-100)',
+            padding: '24px', marginBottom: 24,
+            display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 24,
+            animation: 'fadeIn 0.2s ease',
+          }}>
             {/* Search */}
-            <div style={{ marginBottom: 24 }}>
+            <div>
+              <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--fp-gray-400)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8, display: 'block' }}>Search</label>
               <div style={{ position: 'relative' }}>
                 <Search size={16} style={{
                   position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
@@ -126,7 +158,7 @@ export default function ShopPage() {
             </div>
 
             {/* Pet Type */}
-            <div style={{ marginBottom: 24 }}>
+            <div>
               <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--fp-gray-400)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8, display: 'block' }}>Pet Type</label>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {PET_TYPES.map(pt => (
@@ -145,7 +177,7 @@ export default function ShopPage() {
             </div>
 
             {/* Category */}
-            <div style={{ marginBottom: 24 }}>
+            <div>
               <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--fp-gray-400)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8, display: 'block' }}>Category</label>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {CATEGORIES.map(cat => (
@@ -176,7 +208,7 @@ export default function ShopPage() {
               </select>
             </div>
           </div>
-        </aside>
+        )}
 
         {/* Product Grid */}
         <div>
