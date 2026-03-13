@@ -152,9 +152,9 @@ export default function ShopPage() {
         maxWidth: 1280, margin: '0 auto', padding: '32px 24px',
       }}>
 
-        {/* Floating Filter Button — fixed right side */}
+        {/* Floating Filter Button — fixed bottom-right */}
         <div style={{
-          position: 'fixed', right: 24, top: '50%', transform: 'translateY(-50%)',
+          position: 'fixed', right: 24, bottom: 80,
           zIndex: 50, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8,
         }}>
           <button onClick={() => setFiltersOpen(!filtersOpen)} style={{
@@ -199,8 +199,8 @@ export default function ShopPage() {
               position: 'fixed', inset: 0, zIndex: 45,
             }} />
             <div style={{
-              position: 'fixed', right: 24, top: 'calc(50% + 28px)',
-              width: 360, zIndex: 51,
+              position: 'fixed', right: 24, bottom: 140,
+              width: 340, zIndex: 51,
               background: 'white', borderRadius: 'var(--radius-xl)',
               boxShadow: '0 12px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.04)',
               padding: '20px',
